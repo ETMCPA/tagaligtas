@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" font-family="Helvetica, Arial, sans-serif">
+  <rect width="1200" height="630" fill="#0f2540"/>
+  <rect x="0" y="620" width="1200" height="10" fill="#87ab69"/>
+  <!-- magnifier motif -->
+  <g opacity="0.14" stroke="#87ab69" fill="none">
+    <circle cx="1000" cy="235" r="150" stroke-width="26"/>
+    <line x1="1106" y1="341" x2="1215" y2="450" stroke-width="34" stroke-linecap="round"/>
+  </g>
+  <!-- accreditation badge -->
+  <rect x="80" y="66" width="520" height="50" rx="25" fill="#132e4f" stroke="#33507a"/>
+  <text x="104" y="99" fill="#9db4d0" font-size="23" font-weight="700">&#10003; ETM-Tax Agent Office [ETM-TAO], Inc.</text>
+  <!-- wordmark -->
+  <text x="76" y="258" font-size="122" font-weight="800" letter-spacing="-3">
+    <tspan fill="#ffffff">Taga</tspan><tspan fill="#1f51ff">Suri</tspan>
+  </text>
+  <!-- tagline -->
+  <text x="82" y="342" fill="#87ab69" font-size="48" font-weight="800">No areglo. We use the law.</text>
+  <!-- sub -->
+  <text x="82" y="414" fill="#cbd5e1" font-size="34" font-weight="600">Got a BIR Letter of Authority? Check if it was validly issued</text>
+  <text x="82" y="456" fill="#cbd5e1" font-size="34" font-weight="600">&#8212; before you argue the numbers.</text>
+  <!-- languages -->
+  <text x="82" y="552" fill="#7f93ab" font-size="27" font-weight="700">English &#183; Tagalog &#183; &#20013;&#25991;</text>
+</svg>

@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+# editors
+*.swp
+.vscode/
+# never commit client documents or secrets into the deployable site
+*.pdf
+*.docx
+*.pages
+*.numbers
+*.zip
+.env

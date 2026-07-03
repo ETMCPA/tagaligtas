@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TagaSuri — Got a BIR letter? Know your options first.</title>
+<meta name="description" content="TagaSuri by ETM-Tax Agent Office (ETM-TAO), Inc. Check whether the BIR Letter of Authority against you was validly issued. No areglo — we use the law.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f2540">
+<!-- Facebook / Messenger share card. After you deploy, set og:url and og:image to your full https URL. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="TagaSuri">
+<meta property="og:title" content="Got a BIR letter? Know your options first.">
+<meta property="og:description" content="Check whether the BIR Letter of Authority against you was validly issued. No areglo — we use the law. ETM-Tax Agent Office [ETM-TAO], Inc.">
+<meta property="og:image" content="og-image.svg">
+<meta property="og:locale" content="en_PH">
+<meta property="og:locale:alternate" content="tl_PH">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Got a BIR letter? Know your options first.">
+<meta name="twitter:description" content="Check whether the BIR Letter of Authority against you was validly issued. No areglo — we use the law.">
+<meta name="twitter:image" content="og-image.svg">
+<style>
+  :root{
+    --navy:#0f2540; --slate:#334155; --muted:#64748b; --line:#e5e9ef;
+    --bg:#f6f8f5; --card:#ffffff;
+    --green:#87ab69; --green-soft:#eef4e9; --green-strong:#4f6b3a; --green-ink:#3c5230;
+    --amber:#b45309; --amber-soft:#fff7ed; --amber-line:#fed7aa;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:var(--font);color:var(--navy);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:480px;margin:0 auto;background:var(--card);min-height:100vh;box-shadow:0 0 60px rgba(15,37,64,.06)}
+  a{color:var(--green-strong)}
+  :focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:6px}
+
+  /* header */
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:13px 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
+  .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
+  .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+    padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
+  .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
+
+  /* hero */
+  .hero{padding:26px 20px 20px}
+  .kicker{display:inline-flex;align-items:center;gap:7px;background:var(--amber-soft);color:var(--amber);
+    font-size:11px;font-weight:800;letter-spacing:.02em;padding:6px 11px;border-radius:999px;margin-bottom:16px}
+  .kicker .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  h1{font-size:28px;line-height:1.14;font-weight:800;letter-spacing:-.025em}
+  .h-tl{font-size:15.5px;color:var(--slate);margin-top:11px;font-weight:600}
+  .h-zh{font-size:13.5px;color:var(--muted);margin-top:5px}
+  .noareglo{margin-top:18px;font-size:16px;font-weight:800}
+  .noareglo em{color:var(--green-strong);font-style:normal}
+  .trust{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:8px 12px;
+    border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--slate)}
+  .badge.accred{border-color:#cfe0c2;background:var(--green-soft);color:var(--green-ink)}
+
+  .payoff{margin:20px 20px 0;background:var(--navy);color:#fff;border-radius:var(--radius);padding:15px 16px;
+    display:flex;align-items:center;gap:13px}
+  .payoff .clock{flex:0 0 42px;height:42px;border-radius:50%;border:2px solid #3b5578;display:flex;
+    align-items:center;justify-content:center;font-size:19px}
+  .payoff .pt{font-size:13.5px;font-weight:700}
+  .payoff .ps{font-size:12px;color:#b9c6d9;margin-top:2px}
+
+  .ctawrap{padding:18px 20px 8px}
+  .btn{display:block;width:100%;font:inherit;font-size:16px;font-weight:800;padding:16px;border-radius:12px;
+    text-align:center;cursor:pointer;border:none;min-height:52px}
+  .btn-primary{background:var(--green-strong);color:#fff}
+  .btn-primary:hover{background:var(--green-ink)}
+  a.btn{text-decoration:none}
+  .btn-sub{text-align:center;font-size:12px;color:var(--muted);margin-top:9px}
+  .appr-intro{background:var(--green-soft);border:1px solid #cfe0c2;border-radius:12px;padding:14px 15px;
+    font-size:13px;color:var(--green-ink);line-height:1.55;margin-bottom:14px}
+  .appr-intro b{color:var(--navy)}
+
+  .what{margin:16px 20px 0;padding-top:16px;border-top:1px solid var(--line);font-size:13.5px;color:var(--slate)}
+  .what b{color:var(--navy)}
+
+  /* triage */
+  .triage{padding:24px 20px 8px;border-top:8px solid var(--bg);margin-top:22px;scroll-margin-top:70px}
+  .step{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--green-strong)}
+  .q{font-size:21px;font-weight:800;margin:6px 0 5px;letter-spacing:-.015em}
+  .reassure{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  fieldset{border:none;margin-bottom:16px}
+  legend{font-size:13px;font-weight:700;margin-bottom:8px}
+  .opt{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:11px;
+    padding:13px 14px;font-size:14px;font-weight:600;color:var(--slate);cursor:pointer;margin-bottom:8px;min-height:48px}
+  .opt input{position:absolute;opacity:0;width:0;height:0}
+  .opt .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 18px}
+  .opt:has(input:checked){border-color:var(--green);background:var(--green-soft);color:var(--navy)}
+  .opt:has(input:checked) .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
+  label.fl{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
+  input[type=date]{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1px solid var(--line);
+    border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
+
+  .result{margin-top:4px;background:var(--amber-soft);border:1px solid var(--amber-line);border-radius:12px;padding:16px;display:none}
+  .result.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .result .rlabel{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--amber)}
+  .result .big{font-size:22px;font-weight:800;color:var(--amber);margin:3px 0 6px;line-height:1.2}
+  .result .rbody{font-size:13px;color:var(--slate)}
+  .result.out{background:var(--green-soft);border-color:#cfe0c2}
+  .result.out .rlabel,.result.out .big{color:var(--green-ink)}
+  .disclaimer{font-size:11.5px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px dashed var(--amber-line)}
+
+  .privacy{font-size:11px;color:var(--muted);margin:16px 0 0;text-align:center}
+  .privacy b{color:var(--slate)}
+
+  footer{padding:22px 20px 30px;margin-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);text-align:center}
+  footer b{color:var(--slate)}
+  .hidden{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="#top" class="logo">Taga<span>Suri</span></a>
+    <div class="langtabs" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <button data-lang="tl" aria-pressed="false">TL</button>
+      <button data-lang="zh" aria-pressed="false">中</button>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO: trilingual stack is static (inclusion signal), shown in all languages -->
+    <section class="hero">
+      <span class="kicker"><span class="dot"></span><span data-i="kicker">BIR audit? Read this first</span></span>
+      <h1>Got a BIR letter?<br>Don't panic — know your options first.</h1>
+      <p class="h-tl">May sulat mula sa BIR? Huwag mataranta — alamin muna kung <em>valid</em> ang LOA.</p>
+      <p class="h-zh">收到 BIR 税务信？别慌，先弄清楚你的选择。</p>
+
+      <p class="noareglo">No <em>areglo</em>. We use the law.</p>
+      <div class="trust">
+        <span class="badge accred">✓ ETM-Tax Agent Office [ETM-TAO], Inc.</span>
+        <span class="badge">₱ <span data-i="fees">Fixed, transparent fees</span></span>
+      </div>
+    </section>
+
+    <div class="payoff">
+      <div class="clock" aria-hidden="true">⏱</div>
+      <div>
+        <div class="pt" data-i="payoffT">Free: we'll tell you your deadline.</div>
+        <div class="ps" data-i="payoffS">Missing it can be fatal to your defense.</div>
+      </div>
+    </div>
+
+    <div class="ctawrap">
+      <button class="btn btn-primary" id="startBtn" data-i="startCta">Start free — 2-minute check →</button>
+      <div class="btn-sub" data-i="startSub">No signup. Tell us what you got and when.</div>
+    </div>
+
+    <p class="what"><b data-i="whatLbl">What we do:</b> <span data-i="whatBody">we check whether the LOA against you was <b>validly issued</b>. If it wasn't, that's often the fastest way to stop an audit — before arguing the numbers.</span></p>
+
+    <!-- TRIAGE -->
+    <section class="triage" id="triage" aria-labelledby="triageQ">
+      <div class="step" data-i="stepLbl">Step 1 of 1 · Free</div>
+      <h2 class="q" id="triageQ" data-i="triageQ">What did you receive, and when?</h2>
+      <p class="reassure" data-i="reassure">Two minutes. No account. We'll tell you if we can help and how urgent your deadline is.</p>
+
+      <form id="triageForm">
+        <fieldset>
+          <legend data-i="gotLbl">What you got</legend>
+          <label class="opt"><input type="radio" name="doc" value="loa" required><span class="dot"></span><span data-i="optLoa">Letter of Authority (LOA / eLA)</span></label>
+          <label class="opt"><input type="radio" name="doc" value="assess"><span class="dot"></span><span data-i="optAssess">Assessment notice (PAN / FLD / FAN)</span></label>
+          <label class="opt"><input type="radio" name="doc" value="unsure"><span class="dot"></span><span data-i="optUnsure">Not sure — I'll bring it to the appraisal</span></label>
+        </fieldset>
+
+        <div style="margin-bottom:16px">
+          <label class="fl" for="letterDate" data-i="dateLbl">Date on the letter</label>
+          <input type="date" id="letterDate" required>
+        </div>
+
+        <div class="result" id="result" role="status" aria-live="polite"></div>
+
+        <div class="ctawrap" style="padding:16px 0 0">
+          <button class="btn btn-primary" type="submit" data-i="checkCta">See my deadline →</button>
+        </div>
+      </form>
+
+      <div id="convert" class="hidden" style="padding:14px 0 0">
+        <p class="appr-intro" data-i="apprIntro"><b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, SDT, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaSuri examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand</b> built on those findings.</p>
+        <a class="btn btn-primary" href="https://m.me/327345850608888" target="_blank" rel="noopener" data-i="apprCta">See my options — book a Case Appraisal →</a>
+        <div class="btn-sub" data-i="apprSub">₱5,000 + VAT · credited to your case if you proceed · we reply on Messenger.</div>
+      </div>
+
+      <p class="privacy">🔒 <b data-i="privLbl">Protected under the Data Privacy Act (RA 10173)</b> <span data-i="privBody">— used only for your case.</span></p>
+    </section>
+  </main>
+
+  <footer>
+    <b>TagaSuri</b> <span data-i="footBy">by</span> ETM-Tax Agent Office [ETM-TAO], Inc.<br>
+    <span data-i="footNote">This page is public education, not tax or legal advice. It does not read your documents or file anything on your behalf.</span>
+  </footer>
+</div>
+
+<script>
+  // ---- i18n: toggleable copy (hero stack stays trilingual, hard-coded) ----
+  const I18N = {
+    en:{ kicker:"BIR audit? Read this first", fees:"Fixed, transparent fees",
+      payoffT:"Free: we'll tell you your deadline.", payoffS:"Missing it can be fatal to your defense.",
+      startCta:"Start free — 2-minute check →", startSub:"No signup. Tell us what you got and when.",
+      whatLbl:"What we do:", whatBody:"we check whether the LOA against you was <b>validly issued</b>. If it wasn't, that's often the fastest way to stop an audit — before arguing the numbers.",
+      stepLbl:"Step 1 of 1 · Free", triageQ:"What did you receive, and when?",
+      reassure:"Two minutes. No account. We'll tell you if we can help and how urgent your deadline is.",
+      gotLbl:"What you got", optLoa:"Letter of Authority (LOA / eLA)", optAssess:"Assessment notice (PAN / FLD / FAN)", optUnsure:"Not sure — I'll bring it to the appraisal",
+      dateLbl:"Date on the letter", checkCta:"See my deadline →",
+      apprCta:"See my options — book a Case Appraisal →", apprSub:"₱5,000 + VAT · credited to your case if you proceed · we reply on Messenger.",
+      apprIntro:"<b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, SDT, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaSuri examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand</b> built on those findings.",
+      privLbl:"Protected under the Data Privacy Act (RA 10173)", privBody:"— used only for your case.",
+      footBy:"by", footNote:"This page is public education, not tax or legal advice. It does not read your documents or file anything on your behalf." },
+    tl:{ kicker:"Audit ng BIR? Basahin ito muna", fees:"Fixed at malinaw na bayad",
+      payoffT:"Libre: sasabihin namin ang deadline mo.", payoffS:"Delikado sa depensa mo kapag nalampasan.",
+      startCta:"Libreng simula — 2 minutong check →", startSub:"Walang account. Sabihin lang kung ano at kailan.",
+      whatLbl:"Ang ginagawa namin:", whatBody:"sinusuri namin kung <b>valid ba ang pagkakaisyu</b> ng LOA laban sa iyo. Kung hindi, ito ang madalas na pinakamabilis na paraan para mapatigil ang audit.",
+      stepLbl:"Hakbang 1 ng 1 · Libre", triageQ:"Ano ang natanggap mo, at kailan?",
+      reassure:"Dalawang minuto. Walang account. Sasabihin namin kung matutulungan ka namin at gaano ka-urgent.",
+      gotLbl:"Ano ang natanggap", optLoa:"Letter of Authority (LOA / eLA)", optAssess:"Assessment (PAN / FLD / FAN)", optUnsure:"Hindi sigurado — dadalhin ko sa appraisal",
+      dateLbl:"Petsa sa sulat", checkCta:"Tingnan ang deadline ko →",
+      apprCta:"Tingnan ang options — mag-book ng Case Appraisal →", apprSub:"₱5,000 + VAT · ibabawas sa kaso kung magpapatuloy · sasagot kami sa Messenger.",
+      apprIntro:"<b>Paano gumagana ang appraisal:</b> ibahagi ang iyong Google Drive folder na may kumpletong record — LoA, 1st / 2nd / Final Notice, SDT, NOD, PAN, FLD/FAN, FDDA, FD, at ang iyong nakasulat na sagot sa bawat isa. Susuriin ng TagaSuri ang LoA batay sa record na iyon at magbibigay ng <b>Executive Summary</b>. Kung nais mong kumilos dito, ang susunod na level ay isang <b>Statutory Demand</b> base sa mga natuklasan.",
+      privLbl:"Protektado sa ilalim ng Data Privacy Act (RA 10173)", privBody:"— para lang sa kaso mo.",
+      footBy:"ng", footNote:"Ang pahinang ito ay public education, hindi tax o legal advice. Hindi nito binabasa ang iyong dokumento o naghahain para sa iyo." },
+    zh:{ kicker:"BIR 稽查？请先读这里", fees:"收费固定透明",
+      payoffT:"免费：我们会告诉你截止日期。", payoffS:"错过可能对你的抗辩致命。",
+      startCta:"免费开始 — 两分钟检查 →", startSub:"无需注册。告诉我们你收到什么、何时收到。",
+      whatLbl:"我们做什么：", whatBody:"我们审查针对你的授权书是否<b>合法签发</b>。若不合法，这往往是最快叫停稽查的方式 — 在争论数字之前。",
+      stepLbl:"第 1 步（共 1 步）· 免费", triageQ:"你收到了什么，何时收到？",
+      reassure:"两分钟。无需注册。我们会告诉你能否帮忙，以及你的期限有多紧迫。",
+      gotLbl:"你收到什么", optLoa:"稽查授权书（LOA / eLA）", optAssess:"评税通知（PAN / FLD / FAN）", optUnsure:"不确定 — 评估时我会带来",
+      dateLbl:"信件日期", checkCta:"查看我的期限 →",
+      apprCta:"查看方案 — 预约案件评估 →", apprSub:"₱5,000 + 增值税 · 若继续委托可抵扣 · 我们在 Messenger 回复。",
+      apprIntro:"<b>评估流程：</b>分享你的 Google Drive 文件夹，内含完整记录 — LoA、第一/第二/最终通知、SDT、NOD、PAN、FLD/FAN、FDDA、FD，以及你对每份文件的书面答复。TagaSuri 依据该记录审查 LoA，并出具<b>行政摘要（Executive Summary）</b>。若你想据此行动，下一步是根据这些发现拟备<b>法定要求书（Statutory Demand）</b>。",
+      privLbl:"受《数据隐私法》(RA 10173) 保护", privBody:"— 仅用于你的案件。",
+      footBy:"由", footNote:"本页为公共教育，非税务或法律意见。它不读取你的文件，也不代你提交任何东西。" }
+  };
+
+  const RESULTS = {
+    en:{
+      loanote:"An LOA means an audit is now open. The tight deadlines arrive with the notices that follow — a PAN reply is often ~15 days, an FLD/FAN protest ~30 days. Your appraisal maps your exact clock.",
+      assessTitle:d=>`Your protest window may close around ${d}.`,
+      assessBody:"Assessment protests are often ~30 days from receipt (a PAN reply can be ~15). Based on your date, that could be soon — or already near.",
+      loaTitle:"The audit clock is already running.",
+      unsureTitle:"Let's find your deadline together.",
+      unsureBody:"Bring the letter to a Case Appraisal and we'll read the actual document and map the exact, binding window.",
+      elapsed:n=>`It has been ${n} day${n===1?"":"s"} since the date on your letter.`,
+      future:"That date is in the future — double-check the date on your letter.",
+      disc:"Estimate only, from the date you entered — not a binding deadline. Your paid Case Appraisal confirms the exact window from the actual document. Do not rely on this number alone."
+    },
+    tl:{
+      loanote:"Ang LOA ay nangangahulugang bukas na ang audit. Ang mahigpit na deadline ay kasama ng mga susunod na notice — ang PAN reply ay madalas ~15 araw, ang FLD/FAN protest ~30 araw. Ang appraisal ang magbibigay ng eksaktong takda mo.",
+      assessTitle:d=>`Maaaring magsara ang protest window mo bandang ${d}.`,
+      assessBody:"Ang protest sa assessment ay madalas ~30 araw mula pagtanggap (ang PAN reply ay ~15). Base sa petsa mo, maaaring malapit na — o lampas na.",
+      loaTitle:"Umaandar na ang orasan ng audit.",
+      unsureTitle:"Hanapin natin ang deadline mo nang sabay.",
+      unsureBody:"Dalhin ang sulat sa Case Appraisal at babasahin namin ang mismong dokumento para sa eksaktong takda.",
+      elapsed:n=>`${n} araw na ang nakalipas mula sa petsa ng sulat mo.`,
+      future:"Nasa hinaharap ang petsang iyon — i-double check ang petsa sa sulat mo.",
+      disc:"Estimate lang, base sa petsang inilagay mo — hindi ito ang opisyal na deadline. Ang bayad na Case Appraisal ang magkukumpirma ng eksaktong takda mula sa mismong dokumento. Huwag umasa dito lang."
+    },
+    zh:{
+      loanote:"收到 LOA 表示稽查已开始。真正紧迫的期限随后续通知而来 — PAN 答复通常约 15 天，FLD/FAN 抗辩约 30 天。评估会为你定出确切时限。",
+      assessTitle:d=>`你的抗辩期限可能在 ${d} 前后截止。`,
+      assessBody:"评税抗辩通常自收到起约 30 天（PAN 答复约 15 天）。按你的日期，可能很快 — 或已临近。",
+      loaTitle:"稽查的时钟已经在走。",
+      unsureTitle:"我们一起找出你的期限。",
+      unsureBody:"把信件带到案件评估，我们会审阅原件并定出确切、具约束力的时限。",
+      elapsed:n=>`距你信件上的日期已过去 ${n} 天。`,
+      future:"该日期在未来 — 请再核对信件上的日期。",
+      disc:"仅为估算，依你输入的日期 — 并非具约束力的期限。付费案件评估会依据原件确认确切时限。请勿仅凭此数字行事。"
+    }
+  };
+
+  let LANG = "en";
+  function applyLang(lang){
+    LANG = lang;
+    document.documentElement.lang = lang==="zh" ? "zh-CN" : (lang==="tl" ? "tl" : "en");
+    document.querySelectorAll("[data-i]").forEach(el=>{
+      const k = el.getAttribute("data-i");
+      if(I18N[lang][k] != null) el.innerHTML = I18N[lang][k];
+    });
+    document.querySelectorAll(".langtabs button").forEach(b=>{
+      b.setAttribute("aria-pressed", String(b.dataset.lang===lang));
+    });
+    // re-render an open result in the new language
+    if(document.getElementById("result").classList.contains("show")) computeResult();
+  }
+  document.querySelectorAll(".langtabs button").forEach(b=>{
+    b.addEventListener("click", ()=>applyLang(b.dataset.lang));
+  });
+
+  document.getElementById("startBtn").addEventListener("click", ()=>{
+    document.getElementById("triage").scrollIntoView({behavior:"smooth"});
+    document.querySelector('input[name="doc"]').focus({preventScroll:true});
+  });
+
+  function daysBetween(a,b){ return Math.round((b-a)/86400000); }
+  function fmt(d){ return d.toLocaleDateString(LANG==="zh"?"zh-CN":(LANG==="tl"?"en-PH":"en-PH"),{year:"numeric",month:"short",day:"numeric"}); }
+
+  function computeResult(){
+    const doc = (document.querySelector('input[name="doc"]:checked')||{}).value;
+    const dateVal = document.getElementById("letterDate").value;
+    if(!doc || !dateVal) return;
+    const R = RESULTS[LANG];
+    const box = document.getElementById("result");
+    const today = new Date(); today.setHours(0,0,0,0);
+    const d0 = new Date(dateVal+"T00:00:00");
+    const elapsed = daysBetween(d0, today);
+    const future = elapsed < 0;
+
+    let title="", body="", cls="result show";
+    if(doc==="assess"){
+      const due = new Date(d0); due.setDate(due.getDate()+30);
+      title = R.assessTitle(fmt(due));
+      body = R.assessBody + " " + (future ? R.future : R.elapsed(elapsed));
+    } else if(doc==="loa"){
+      title = R.loaTitle;
+      body = R.loanote + " " + (future ? R.future : R.elapsed(elapsed));
+    } else {
+      cls += " out";
+      title = R.unsureTitle;
+      body = R.unsureBody + " " + (future ? R.future : R.elapsed(elapsed));
+    }
+    box.className = cls;
+    box.innerHTML = `<div class="rlabel">${LANG==="zh"?"你的期限":(LANG==="tl"?"Ang deadline mo":"Your deadline")}</div>`
+      + `<div class="big">${title}</div>`
+      + `<div class="rbody">${body}</div>`
+      + `<div class="disclaimer">${R.disc}</div>`;
+    document.getElementById("convert").classList.remove("hidden");
+  }
+
+  document.getElementById("triageForm").addEventListener("submit", e=>{
+    e.preventDefault();
+    computeResult();
+    document.getElementById("convert").scrollIntoView({behavior:"smooth",block:"center"});
+  });
+
+  applyLang("en");
+</script>
+</body>
+</html>
