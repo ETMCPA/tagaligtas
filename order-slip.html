@@ -184,6 +184,7 @@
   const EMAIL = "taxspecialista@kataxpayer.com";
   const SUBJECT = "New Executive Summary order";
   const PAY_URL = "settlement.html";
+  const CREATE_ORDER_FN = "https://aodkheohhbzcgvzhjekx.supabase.co/functions/v1/create-order";
   // Provisional Order No. — unique per order, generated in-browser until a server counter exists.
   // Format: TL-ES-YYMMDD-<last5 of epoch><rand digit>. Included in the order email + carried to checkout.
   function makeOrderNo(){
@@ -304,6 +305,9 @@
       el(first).focus(); return;
     }
     lastData=d;
+    // Reliable intake: save the order to the database immediately (the email below is a fallback).
+    fetch(CREATE_ORDER_FN,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({order_no:ORDER_NO,name:d.name,email:d.email,mobile:d.mobile,drive_link:d.drive})}).catch(()=>{});
     renderSent(false);              // show the email buttons immediately, regardless of clipboard
     const body=SHARE[LANG].msg(d);
     if(navigator.clipboard && navigator.clipboard.writeText){
