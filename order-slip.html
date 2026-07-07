@@ -1,0 +1,311 @@
+<!doctype html>
+<!--
+  ========================= ORDER SLIP (intake + confirmation) =========================
+  Flow: funnel (index.html) → THIS PAGE (order-slip.html) → payment (settlement.html)
+
+  TWO sections, deliberately split:
+   • USER ENTERS  — the only things NOT already inside the shared folder:
+       Name, Email, Mobile, Google Drive Folder Link, + a "Confirmed correct" checkbox.
+   • SYSTEM DISPLAYS / EXTRACTS — the Order Slip. In this pilot the OPERATOR completes the
+       extracted fields after reading the shared folder (auto-extraction = the backend
+       engine, still parked pending the Executive Summary template). Two are real now:
+       Amount Due (₱5,600 fixed ES fee) and the Product line. Order No. is assigned
+       server-side on confirmation; the format is shown as an example.
+
+  Zero facts are asked here that already live in the folder. No secrets in this HTML.
+  Submit hands off by email (same pattern as the rest of the app), then links to payment.
+  =====================================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TagaLigtas — Order Slip</title>
+<meta name="description" content="Confirm your Executive Summary order with ETM-Tax Agent Office [ETM-TAO], Inc. Enter your details and Google Drive folder link.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f2540">
+<style>
+  :root{
+    --navy:#0f2540; --slate:#334155; --muted:#64748b; --line:#e5e9ef;
+    --bg:#f6f8f5; --card:#ffffff;
+    --green:#87ab69; --green-soft:#eef4e9; --green-strong:#4f6b3a; --green-ink:#3c5230;
+    --amber:#b45309; --amber-soft:#fff7ed; --amber-line:#fed7aa;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:var(--font);color:var(--navy);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:480px;margin:0 auto;background:var(--card);min-height:100vh;box-shadow:0 0 60px rgba(15,37,64,.06)}
+  a{color:var(--green-strong)}
+  :focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:6px}
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:13px 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
+  .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
+  .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+    padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
+  .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
+  main{padding:24px 20px 8px}
+  .step{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--green-strong)}
+  .q{font-size:22px;font-weight:800;margin:6px 0 5px;letter-spacing:-.02em;text-wrap:balance}
+  .reassure{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  .sechead{font-size:13px;font-weight:800;color:var(--navy);margin:20px 0 4px;letter-spacing:-.01em}
+  .sechint{font-size:12px;color:var(--muted);margin-bottom:12px}
+  label.fl{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}
+  input[type=text],input[type=email],input[type=tel],input[type=url]{width:100%;font:inherit;font-size:15px;
+    padding:13px 14px;border:1px solid var(--line);border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
+  input::placeholder{color:#aeb8c6}
+  .hint{font-size:12px;color:var(--muted);margin-top:6px}
+  .hint b{color:var(--slate)}
+  /* confirm checkbox */
+  .confirm{display:flex;gap:11px;align-items:flex-start;margin:16px 0 2px;padding:13px 14px;
+    border:1px solid var(--line);border-radius:11px;background:var(--green-soft);cursor:pointer}
+  .confirm input{width:20px;height:20px;flex:0 0 20px;margin-top:1px;accent-color:var(--green-strong);cursor:pointer}
+  .confirm span{font-size:13px;font-weight:700;color:var(--green-ink)}
+  /* order slip */
+  .slip{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-top:6px}
+  .slip-head{background:var(--navy);color:#fff;padding:13px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .slip-head .lbl{font-size:11.5px;color:#b9c6d9;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .slip-head .ono{font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  .slip-note{font-size:11.5px;color:var(--amber);background:var(--amber-soft);border-bottom:1px solid var(--amber-line);padding:9px 16px;font-weight:600}
+  .slip-row{display:flex;justify-content:space-between;gap:14px;padding:11px 16px;font-size:13.5px;border-bottom:1px solid var(--line)}
+  .slip-row:last-child{border-bottom:none}
+  .slip-row .k{color:var(--slate);flex:0 0 auto}
+  .slip-row .v{font-weight:700;text-align:right;word-break:break-word}
+  .slip-row .v.pending{color:var(--muted);font-weight:600;font-style:italic}
+  .slip-row.amount{background:var(--green-soft)}
+  .slip-row.amount .k{font-weight:800;color:var(--navy)}
+  .slip-row.amount .v{font-size:17px;font-weight:800;color:var(--green-ink)}
+  .btn{display:block;width:100%;font:inherit;font-size:16px;font-weight:800;padding:16px;border-radius:12px;
+    text-align:center;cursor:pointer;border:none;min-height:52px;text-decoration:none}
+  .btn-primary{background:var(--green-strong);color:#fff}
+  .btn-primary:hover{background:var(--green-ink)}
+  .btn-ghost{background:#fff;color:var(--green-strong);border:1.5px solid var(--green-strong)}
+  .btn-sub{text-align:center;font-size:12px;color:var(--muted);margin-top:9px}
+  .warn{font-size:12px;color:var(--amber);margin:8px 0 0;font-weight:600}
+  .result{margin-top:14px;background:var(--green-soft);border:1px solid #cfe0c2;border-radius:12px;padding:16px;display:none}
+  .result.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .msgbox{margin-top:10px;font-size:13px;background:#fff;border:1px dashed var(--line);border-radius:10px;
+    padding:12px;color:var(--slate);white-space:pre-wrap;word-break:break-word}
+  .privacy{font-size:11px;color:var(--muted);margin:16px 0 0;text-align:center}
+  .privacy b{color:var(--slate)}
+  footer{padding:22px 20px 30px;margin-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);text-align:center;line-height:1.8}
+  footer b{color:var(--slate)}
+  footer a{font-weight:700;white-space:nowrap}
+  .hidden{display:none !important}
+  .back{display:inline-block;font-size:12.5px;font-weight:700;margin-bottom:10px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="index.html" class="logo">Taga<span>Ligtas</span></a>
+    <div class="langtabs" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <button data-lang="tl" aria-pressed="false">TL</button>
+      <button data-lang="zh" aria-pressed="false">中</button>
+    </div>
+  </header>
+
+  <main>
+    <a href="index.html" class="back" data-i="back">← Back</a>
+    <div class="step" data-i="step">Step 3 · Order Slip</div>
+    <h1 class="q" data-i="title">Confirm your order</h1>
+    <p class="reassure" data-i="intro">Enter your contact details and the link to your Google Drive folder. We read the folder and complete the Order Slip below — we don't re-ask for anything already in your documents.</p>
+
+    <form id="orderForm">
+      <!-- ============ USER ENTERS ============ -->
+      <div class="sechead" data-i="secYou">Your details</div>
+      <div class="sechint" data-i="secYouHint">The only things not already in your folder.</div>
+
+      <label class="fl" for="uname" data-i="lblName">Name</label>
+      <input type="text" id="uname" autocomplete="name" placeholder="e.g. Emelino T. Maestro">
+
+      <label class="fl" for="uemail" data-i="lblEmail">Email</label>
+      <input type="email" id="uemail" autocomplete="email" inputmode="email" placeholder="e.g. taxspecialista@kataxpayer.com">
+
+      <label class="fl" for="umobile" data-i="lblMobile">Mobile</label>
+      <input type="tel" id="umobile" autocomplete="tel" inputmode="tel" placeholder="e.g. 09228010922">
+
+      <label class="fl" for="udrive" data-i="lblDrive">Google Drive folder link</label>
+      <input type="url" id="udrive" inputmode="url" placeholder="https://drive.google.com/drive/folders/…">
+      <p class="hint" data-i="driveHint">Share the folder with us as <b>Viewer</b> and paste the link. It holds your LoA and related BIR documents.</p>
+
+      <label class="confirm" for="uconfirm">
+        <input type="checkbox" id="uconfirm">
+        <span data-i="confirmLbl">I confirm my details and the extracted facts shown below are correct.</span>
+      </label>
+      <div id="formWarn" class="warn hidden" data-i="warnFields">Please complete all fields and tick the confirmation box.</div>
+
+      <!-- ============ SYSTEM DISPLAYS / EXTRACTS ============ -->
+      <div class="sechead" data-i="secSlip">Order Slip</div>
+      <div class="sechint" data-i="secSlipHint">Prepared by TagaLigtas from your shared folder.</div>
+
+      <div class="slip">
+        <div class="slip-head">
+          <span class="lbl" data-i="soOrderNo">Order No.</span>
+          <span class="ono">TL-ES-2026-000001</span>
+        </div>
+        <div class="slip-note" data-i="slipNote">Example number — your Order No. is assigned when we confirm. The fields below are completed after we read your shared folder.</div>
+        <div class="slip-row"><span class="k" data-i="soTaxpayer">Taxpayer / Company Name</span><span class="v pending" data-i="pend1" data-pending="1">Pending folder review</span></div>
+        <div class="slip-row"><span class="k" data-i="soLoa">LOA No.</span><span class="v pending" data-i="pend2" data-pending="1">Pending folder review</span></div>
+        <div class="slip-row"><span class="k" data-i="soProduct">Product</span><span class="v" data-i="productVal">Executive Summary for Letter of Authority No. [LOA No.]</span></div>
+        <div class="slip-row amount"><span class="k" data-i="soAmount">Amount Due</span><span class="v">₱5,600.00</span></div>
+        <div class="slip-row"><span class="k" data-i="soRdo">BIR Office / RDO</span><span class="v pending" data-i="pend3" data-pending="1">Pending folder review</span></div>
+        <div class="slip-row"><span class="k" data-i="soPeriod">Taxable Period</span><span class="v pending" data-i="pend4" data-pending="1">Pending folder review</span></div>
+        <div class="slip-row"><span class="k" data-i="soDocDate">Document Date</span><span class="v pending" data-i="pend5" data-pending="1">Pending folder review</span></div>
+      </div>
+      <p class="hint" data-i="amountHint">Amount Due is the fixed Executive Summary fee (₱5,000 + 12% VAT). Credited to your case if you proceed to a Statutory Demand.</p>
+
+      <div style="padding:16px 0 0">
+        <button class="btn btn-primary" type="submit" id="submitBtn" data-i="submitCta">Submit my order →</button>
+        <div class="btn-sub" data-i="submitSub">We prefill an email with your details — just press send.</div>
+      </div>
+    </form>
+
+    <div id="sent" class="result" role="status" aria-live="polite"></div>
+
+    <p class="privacy">🔒 <b data-i="privLbl">We read only the folder you share, as Viewer.</b>
+      <span data-i="privBody">You own your data; nothing is retained. Protected under the Data Privacy Act (RA 10173).</span></p>
+  </main>
+
+  <footer>
+    <b>TagaLigtas</b> <span data-i="footBy">by</span> ETM-Tax Agent Office [ETM-TAO], Inc.<br>
+    <span data-i="emailFoot">Email:</span> <a href="mailto:taxspecialista@kataxpayer.com">taxspecialista@kataxpayer.com</a><br>
+    <span data-i="footNote">This is a guide to getting the answer and not a legal advice. Your discretion is a must.</span>
+  </footer>
+</div>
+
+<script>
+  const EMAIL = "taxspecialista@kataxpayer.com";
+  const SUBJECT = "New Executive Summary order";
+  const PAY_URL = "settlement.html";
+
+  const I18N = {
+    en:{ back:"← Back", step:"Step 3 · Order Slip", title:"Confirm your order",
+      intro:"Enter your contact details and the link to your Google Drive folder. We read the folder and complete the Order Slip below — we don't re-ask for anything already in your documents.",
+      secYou:"Your details", secYouHint:"The only things not already in your folder.",
+      lblName:"Name", lblEmail:"Email", lblMobile:"Mobile", lblDrive:"Google Drive folder link",
+      driveHint:"Share the folder with us as <b>Viewer</b> and paste the link. It holds your LoA and related BIR documents.",
+      confirmLbl:"I confirm my details and the extracted facts shown below are correct.",
+      warnFields:"Please complete all fields and tick the confirmation box.",
+      secSlip:"Order Slip", secSlipHint:"Prepared by TagaLigtas from your shared folder.",
+      soOrderNo:"Order No.", slipNote:"Example number — your Order No. is assigned when we confirm. The fields below are completed after we read your shared folder.",
+      soTaxpayer:"Taxpayer / Company Name", soLoa:"LOA No.", soProduct:"Product",
+      productVal:"Executive Summary for Letter of Authority No. [LOA No.]",
+      soAmount:"Amount Due", soRdo:"BIR Office / RDO", soPeriod:"Taxable Period", soDocDate:"Document Date",
+      pend1:"Pending folder review", pend2:"Pending folder review", pend3:"Pending folder review", pend4:"Pending folder review", pend5:"Pending folder review",
+      amountHint:"Amount Due is the fixed Executive Summary fee (₱5,000 + 12% VAT). Credited to your case if you proceed to a Statutory Demand.",
+      submitCta:"Submit my order →", submitSub:"We prefill an email with your details — just press send.",
+      emailFoot:"Email:", footBy:"by",
+      footNote:"This is a guide to getting the answer and not a legal advice. Your discretion is a must.",
+      privLbl:"We read only the folder you share, as Viewer.", privBody:"You own your data; nothing is retained. Protected under the Data Privacy Act (RA 10173)." },
+    tl:{ back:"← Bumalik", step:"Hakbang 3 · Order Slip", title:"Kumpirmahin ang iyong order",
+      intro:"Ilagay ang iyong contact details at ang link ng iyong Google Drive folder. Babasahin namin ang folder at kukumpletuhin ang Order Slip sa baba — hindi na namin uulitin ang mga nasa dokumento mo na.",
+      secYou:"Iyong mga detalye", secYouHint:"Ito lang ang wala pa sa iyong folder.",
+      lblName:"Pangalan", lblEmail:"Email", lblMobile:"Mobile", lblDrive:"Link ng Google Drive folder",
+      driveHint:"I-share sa amin ang folder bilang <b>Viewer</b> at i-paste ang link. Naroon ang iyong LoA at kaugnay na BIR documents.",
+      confirmLbl:"Kinukumpirma ko na tama ang aking mga detalye at ang mga extracted na impormasyong nakalista sa ibaba.",
+      warnFields:"Pakumpleto ang lahat ng field at lagyan ng check ang kahon ng kumpirmasyon.",
+      secSlip:"Order Slip", secSlipHint:"Inihanda ng TagaLigtas mula sa iyong folder.",
+      soOrderNo:"Order No.", slipNote:"Halimbawang numero — itatalaga ang iyong Order No. kapag kinumpirma na. Ang mga field sa baba ay kukumpletuhin pagkatapos naming basahin ang iyong folder.",
+      soTaxpayer:"Taxpayer / Pangalan ng Kumpanya", soLoa:"LOA No.", soProduct:"Produkto",
+      productVal:"Executive Summary para sa Letter of Authority No. [LOA No.]",
+      soAmount:"Halagang Babayaran", soRdo:"BIR Office / RDO", soPeriod:"Taxable Period", soDocDate:"Petsa ng Dokumento",
+      pend1:"Naghihintay ng review ng folder", pend2:"Naghihintay ng review ng folder", pend3:"Naghihintay ng review ng folder", pend4:"Naghihintay ng review ng folder", pend5:"Naghihintay ng review ng folder",
+      amountHint:"Ang Halagang Babayaran ay ang nakatakdang bayad sa Executive Summary (₱5,000 + 12% VAT). Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
+      submitCta:"Isumite ang order →", submitSub:"Maghahanda kami ng email kasama ang mga detalye mo — pindutin lang ang send.",
+      emailFoot:"Email:", footBy:"ng",
+      footNote:"Ito ay gabay sa pagkuha ng sagot at hindi legal advice. Kailangan ang iyong pagpapasya.",
+      privLbl:"Binabasa lang namin ang folder na ibinahagi mo, bilang Viewer.", privBody:"Ikaw ang may-ari ng iyong data; walang itinatago. Protektado sa ilalim ng Data Privacy Act (RA 10173)." },
+    zh:{ back:"← 返回", step:"第 3 步 · 订单单据", title:"确认你的订单",
+      intro:"填写你的联系资料及 Google Drive 文件夹链接。我们会读取文件夹并完成下方的订单单据 — 已在你文件中的资料不会重复询问。",
+      secYou:"你的资料", secYouHint:"仅需提供文件夹中尚未包含的内容。",
+      lblName:"姓名", lblEmail:"电邮", lblMobile:"手机", lblDrive:"Google Drive 文件夹链接",
+      driveHint:"将文件夹以<b>查看者（Viewer）</b>权限分享给我们并粘贴链接。其中包含你的授权函（LoA）及相关 BIR 文件。",
+      confirmLbl:"我确认我的资料及下方所示的提取事实均正确无误。",
+      warnFields:"请填写所有栏位并勾选确认框。",
+      secSlip:"订单单据", secSlipHint:"由 TagaLigtas 依据你分享的文件夹整理。",
+      soOrderNo:"订单号", slipNote:"示例编号 — 确认后将分配你的订单号。下方栏位将在我们读取你分享的文件夹后完成。",
+      soTaxpayer:"纳税人 / 公司名称", soLoa:"授权函号（LOA No.）", soProduct:"产品",
+      productVal:"针对授权函第 [LOA No.] 号的行政摘要（Executive Summary）",
+      soAmount:"应付金额", soRdo:"BIR 办公室 / RDO", soPeriod:"课税期间", soDocDate:"文件日期",
+      pend1:"待文件夹审阅", pend2:"待文件夹审阅", pend3:"待文件夹审阅", pend4:"待文件夹审阅", pend5:"待文件夹审阅",
+      amountHint:"应付金额为固定的行政摘要费用（₱5,000 + 12% 增值税）。若继续委托法定要求书，此费用可抵扣。",
+      submitCta:"提交我的订单 →", submitSub:"我们会准备一封含你资料的电邮 — 按发送即可。",
+      emailFoot:"电邮：", footBy:"由",
+      footNote:"本页是获取答案的指引，并非法律意见。请务必自行判断。",
+      privLbl:"我们仅以查看者身份读取你分享的文件夹。", privBody:"你拥有自己的数据；不作任何保留。受《数据隐私法》(RA 10173) 保护。" }
+  };
+  const SHARE = {
+    en:{ msg:d=>`Hi TagaLigtas — I'd like to order an Executive Summary for my Letter of Authority.\n\nName: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProduct: Executive Summary for my LoA\nAmount Due: ₱5,600.00\nI confirm the details above are correct.`,
+         steps:`Almost done — we've prepared a ready-to-send message to ${EMAIL}. Open it in Gmail (or your email app) and press Send. Nothing is sent until you press Send. Then continue to payment.`,
+         ok:"✓ Copied to your clipboard.", fail:"Couldn't copy automatically — press and hold the box below to select it, then tap Copy.",
+         gmail:"Open in Gmail →", open:"Open in my email app →", pay:"Continue to payment →" },
+    tl:{ msg:d=>`Kumusta TagaLigtas — gusto kong mag-order ng Executive Summary para sa aking Letter of Authority.\n\nPangalan: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProdukto: Executive Summary para sa aking LoA\nHalagang Babayaran: ₱5,600.00\nKinukumpirma ko na tama ang mga detalye sa itaas.`,
+         steps:`Malapit na — nakahanda na ang mensahe papunta sa ${EMAIL}. Buksan ito sa Gmail (o sa iyong email app) at pindutin ang Send. Walang maipapadala hangga't hindi mo pinipindot ang Send. Tapos magpatuloy sa bayad.`,
+         ok:"✓ Nakopya na sa clipboard.", fail:"Hindi awtomatikong nakopya — pindutin nang matagal ang kahon sa baba, tapos i-tap ang Copy.",
+         gmail:"Buksan sa Gmail →", open:"Buksan sa email app →", pay:"Magpatuloy sa bayad →" },
+    zh:{ msg:d=>`你好 TagaLigtas — 我想为我的授权函（Letter of Authority）订购行政摘要。\n\n姓名：${d.name}\n电邮：${d.email}\n手机：${d.mobile}\nGoogle Drive 文件夹：${d.drive}\n\n产品：针对我的 LoA 的行政摘要\n应付金额：₱5,600.00\n我确认以上资料正确无误。`,
+         steps:`就快好了 — 我们已把发往 ${EMAIL} 的邮件填好。在 Gmail（或你的邮件应用）中打开并按发送。未按发送前不会发出任何邮件。然后继续付款。`,
+         ok:"✓ 已复制到剪贴板。", fail:"未能自动复制 — 长按下方方框选中，然后点复制。",
+         gmail:"在 Gmail 中打开 →", open:"用邮件应用打开 →", pay:"继续付款 →" }
+  };
+
+  let LANG="en", lastData=null, lastOk=false;
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  function applyLang(lang){
+    LANG=lang;
+    document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="tl"?"tl":"en");
+    document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(I18N[lang][k]!=null) el.innerHTML=I18N[lang][k]; });
+    document.querySelectorAll(".langtabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+    if(lastData && document.getElementById("sent").classList.contains("show")) renderSent();
+  }
+  document.querySelectorAll(".langtabs button").forEach(b=>b.addEventListener("click",()=>applyLang(b.dataset.lang)));
+
+  const el = id => document.getElementById(id);
+  const formWarn = el("formWarn"), sent = el("sent");
+  function collect(){
+    return { name:el("uname").value.trim(), email:el("uemail").value.trim(),
+             mobile:el("umobile").value.trim(), drive:el("udrive").value.trim(),
+             confirmed:el("uconfirm").checked };
+  }
+  function renderSent(ok){
+    if(typeof ok==="boolean") lastOk=ok;
+    const S=SHARE[LANG], body=S.msg(lastData);
+    const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(body)}`;
+    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}&su=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(body)}`;
+    sent.innerHTML = `<div><b>${S.steps}</b></div>`
+      + `<div class="msgbox">${esc(body)}</div>`
+      + `<div style="font-size:13px;color:var(--slate);margin-top:8px">${lastOk?S.ok:S.fail}</div>`
+      + `<a class="btn btn-primary" href="${gmail}" target="_blank" rel="noopener" style="margin-top:12px">${S.gmail}</a>`
+      + `<a class="btn btn-ghost" href="${mailto}" style="margin-top:9px">${S.open}</a>`
+      + `<a class="btn btn-ghost" href="${PAY_URL}" style="margin-top:9px">${S.pay}</a>`;
+    sent.classList.add("show");
+  }
+  [ "uname","uemail","umobile","udrive","uconfirm" ].forEach(id=>el(id).addEventListener("input",()=>formWarn.classList.add("hidden")));
+  el("orderForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const d=collect();
+    if(!d.name || !d.email || !d.mobile || !d.drive || !d.confirmed){
+      formWarn.classList.remove("hidden");
+      const first = !d.name?"uname":!d.email?"uemail":!d.mobile?"umobile":!d.drive?"udrive":"uconfirm";
+      el(first).focus(); return;
+    }
+    lastData=d;
+    renderSent(false);              // show the email buttons immediately, regardless of clipboard
+    const body=SHARE[LANG].msg(d);
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(body).then(()=>renderSent(true)).catch(()=>{});
+    }
+    sent.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  // Carry-forward from the funnel: prefill the Drive link if passed as ?drive=
+  (function(){ var m=/[?&]drive=([^&#]+)/.exec(location.search); if(m){ try{ el("udrive").value=decodeURIComponent(m[1]); }catch(e){} } })();
+  applyLang("en");
+</script>
+</body>
+</html>

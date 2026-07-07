@@ -10,3 +10,5 @@
 *.numbers
 *.zip
 .env
+.gstack/
+.netlify/

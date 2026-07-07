@@ -1,0 +1,358 @@
+<!doctype html>
+<!--
+  ========================= SETUP CHECKLIST (fill these before launch) =========================
+  Search this file for "FILL-IN" and replace (all inside the PROVIDERS config in the <script>):
+   1. GCASH  — your GCash number + registered name           (PROVIDERS id "gcash")
+   2. BANK   — your bank name, account name, account number   (PROVIDERS id "bank")
+   3. VAT treatment — currently ₱5,000 + 12% VAT = ₱5,600. Change if you are non-VAT / 8% / VAT-exempt.
+  Everything else (design, trilingual copy, email hand-off) is done.
+  Payment is MANUAL (pilot): client pays via GCash/bank, pastes the reference, and it is
+  handed off by email. Zero card data ever touches this page.
+
+  PROVIDER-NEUTRAL checkout: the payment methods shown are rendered from the PROVIDERS
+  config in the <script>. GCash + Bank are active for the pilot; PayMongo / BPI OneQR /
+  UnionBank are pre-listed but inactive. To switch a gateway on later, flip its active:true
+  and add its hook — no change to this markup. Rollout order: PayMongo → BPI OneQR → UnionBank.
+  =============================================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TagaLigtas — Settle your Case Appraisal</title>
+<meta name="description" content="Settle your ₱5,000 Case Appraisal with ETM-Tax Agent Office [ETM-TAO], Inc. Manual payment, reference confirmed by email.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="theme-color" content="#0f2540">
+<style>
+  :root{
+    --navy:#0f2540; --slate:#334155; --muted:#64748b; --line:#e5e9ef;
+    --bg:#f6f8f5; --card:#ffffff;
+    --green:#87ab69; --green-soft:#eef4e9; --green-strong:#4f6b3a; --green-ink:#3c5230;
+    --amber:#b45309; --amber-soft:#fff7ed; --amber-line:#fed7aa;
+    --radius:14px;
+    --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:var(--font);color:var(--navy);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:480px;margin:0 auto;background:var(--card);min-height:100vh;box-shadow:0 0 60px rgba(15,37,64,.06)}
+  a{color:var(--green-strong)}
+  :focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:6px}
+  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+    padding:13px 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
+  .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
+  .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+    padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
+  .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
+  main{padding:24px 20px 8px}
+  .step{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--green-strong)}
+  .q{font-size:22px;font-weight:800;margin:6px 0 5px;letter-spacing:-.02em;text-wrap:balance}
+  .reassure{font-size:12.5px;color:var(--muted);margin-bottom:18px}
+  /* invoice */
+  .invoice{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:18px}
+  .inv-head{background:var(--navy);color:#fff;padding:14px 16px;font-size:13.5px;font-weight:700}
+  .inv-head .sub{font-size:11.5px;color:#b9c6d9;font-weight:600;margin-top:2px}
+  .inv-row{display:flex;justify-content:space-between;align-items:baseline;padding:11px 16px;font-size:14px;border-bottom:1px solid var(--line)}
+  .inv-row .lbl{color:var(--slate)}
+  .inv-row .val{font-weight:700}
+  .inv-row.total{background:var(--green-soft);border-bottom:none}
+  .inv-row.total .lbl{font-weight:800;color:var(--navy)}
+  .inv-row.total .val{font-size:20px;font-weight:800;color:var(--green-ink)}
+  .credit{font-size:11.5px;color:var(--muted);padding:0 16px 13px}
+  /* pay methods */
+  .pay{margin-bottom:16px}
+  .pay h3{font-size:13px;font-weight:700;margin-bottom:8px}
+  .method{display:flex;gap:12px;align-items:flex-start;border:1px solid var(--line);border-radius:11px;padding:13px 14px;margin-bottom:9px}
+  .method .ico{flex:0 0 34px;height:34px;border-radius:9px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:17px}
+  .method .m-name{font-size:13.5px;font-weight:800}
+  .method .m-detail{font-size:13px;color:var(--slate);margin-top:2px;line-height:1.5}
+  .method .m-detail b{color:var(--navy);font-variant-numeric:tabular-nums;letter-spacing:.01em}
+  .method .m-inst{font-size:11.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+  .fillin{color:var(--amber);font-weight:700}
+  label.fl{display:block;font-size:13px;font-weight:700;margin:16px 0 7px}
+  input[type=text]{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1px solid var(--line);
+    border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
+  input[type=file]{width:100%;font:inherit;font-size:13.5px;padding:10px 12px;border:1px dashed var(--line);
+    border-radius:11px;color:var(--slate);background:#fff;min-height:48px;cursor:pointer}
+  input[type=file]::file-selector-button{font:inherit;font-weight:700;font-size:13px;color:#fff;
+    background:var(--green-strong);border:none;border-radius:8px;padding:9px 13px;margin-right:11px;cursor:pointer;min-height:36px}
+  input::placeholder{color:#aeb8c6}
+  .hint{font-size:12px;color:var(--muted);margin-top:7px}
+  .hint b{color:var(--slate)}
+  .btn{display:block;width:100%;font:inherit;font-size:16px;font-weight:800;padding:16px;border-radius:12px;
+    text-align:center;cursor:pointer;border:none;min-height:52px;text-decoration:none}
+  .btn-primary{background:var(--green-strong);color:#fff}
+  .btn-primary:hover{background:var(--green-ink)}
+  .btn-ghost{background:#fff;color:var(--green-strong);border:1.5px solid var(--green-strong)}
+  .btn-sub{text-align:center;font-size:12px;color:var(--muted);margin-top:9px}
+  .warn{font-size:12px;color:var(--amber);margin:8px 0 0;font-weight:600}
+  .result{margin-top:14px;background:var(--green-soft);border:1px solid #cfe0c2;border-radius:12px;padding:16px;display:none}
+  .result.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .msgbox{margin-top:10px;font-size:13px;background:#fff;border:1px dashed var(--line);border-radius:10px;
+    padding:12px;color:var(--slate);white-space:pre-wrap;word-break:break-word}
+  .callrow{text-align:center;font-size:13px;color:var(--muted);margin:16px 0 0;font-weight:600;line-height:1.9}
+  .callrow a{font-weight:800;font-size:15px;white-space:nowrap}
+  .privacy{font-size:11px;color:var(--muted);margin:16px 0 0;text-align:center}
+  .privacy b{color:var(--slate)}
+  footer{padding:22px 20px 30px;margin-top:20px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);text-align:center;line-height:1.8}
+  footer b{color:var(--slate)}
+  footer a{font-weight:700;white-space:nowrap}
+  .hidden{display:none !important}
+  .back{display:inline-block;font-size:12.5px;font-weight:700;margin-bottom:10px;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="index.html" class="logo">Taga<span>Ligtas</span></a>
+    <div class="langtabs" role="group" aria-label="Language">
+      <button data-lang="en" aria-pressed="true">EN</button>
+      <button data-lang="tl" aria-pressed="false">TL</button>
+      <button data-lang="zh" aria-pressed="false">中</button>
+    </div>
+  </header>
+
+  <main>
+    <a href="index.html" class="back" data-i="back">← Back</a>
+    <div class="step" data-i="step">Step 3 · Settle your Case Appraisal</div>
+    <h1 class="q" data-i="title">Settle your Executive Summary</h1>
+    <p class="reassure" data-i="intro">Pay the fixed fee below, then paste your payment reference. We confirm by email and begin your appraisal.</p>
+
+    <div class="invoice">
+      <div class="inv-head"><span data-i="invName">Case Appraisal — Executive Summary</span>
+        <div class="sub" data-i="invBy">ETM-Tax Agent Office [ETM-TAO], Inc.</div></div>
+      <div class="inv-row"><span class="lbl" data-i="invFee">Professional fee</span><span class="val">₱5,000.00</span></div>
+      <!-- FILL-IN: adjust VAT line if you are non-VAT / 8% / VAT-exempt -->
+      <div class="inv-row"><span class="lbl" data-i="invVat">VAT (12%)</span><span class="val">₱600.00</span></div>
+      <div class="inv-row total"><span class="lbl" data-i="invTotal">Total due</span><span class="val">₱5,600.00</span></div>
+      <p class="credit" data-i="invCredit">Credited to your case if you proceed to a Statutory Demand.</p>
+    </div>
+
+    <div class="pay">
+      <h3 data-i="payHow">How to pay</h3>
+      <!-- Provider-neutral: methods are rendered from the PROVIDERS config in the <script>.
+           To fill in GCash/bank details or switch on a gateway, edit PROVIDERS — not this
+           markup. Search "FILL-IN" in that config. -->
+      <div id="methods"></div>
+      <p class="hint" data-i="payAmt">Send exactly <b>₱5,600.00</b>. Use your <b>name</b> as the note/message so we can match it.</p>
+    </div>
+
+    <form id="settleForm">
+      <label class="fl" for="ref" data-i="refLbl">Paste your payment reference number</label>
+      <input type="text" id="ref" inputmode="text" autocomplete="off" placeholder="e.g. GCash Ref 1234 5678 90" aria-describedby="refWarn">
+      <div id="refWarn" class="warn hidden" data-i="refWarn">Please paste your reference number first.</div>
+      <p class="hint" data-i="refHint">On GCash it's the <b>Ref. No.</b> on your receipt. For bank transfers, the <b>transaction / confirmation number</b>.</p>
+
+      <!-- BACKEND HOOK (checkout attachment): the file chosen here is backend-ready.
+           Until a storage backend exists, the taxpayer attaches it in the email that opens. -->
+      <label class="fl" for="proof" data-i="proofLbl">Attach your payment screenshot (optional)</label>
+      <input type="file" id="proof" accept="image/*,.pdf" aria-describedby="proofHint">
+      <p class="hint" id="proofHint" data-i="proofHint">A GCash or bank receipt helps us match your payment faster.</p>
+      <div id="proofName" class="hint" style="font-weight:700;color:var(--green-strong)" role="status" aria-live="polite"></div>
+
+      <div style="padding:16px 0 0">
+        <button class="btn btn-primary" type="submit" id="confirmBtn" data-i="confirmCta">Confirm my payment →</button>
+        <div class="btn-sub" data-i="confirmSub">We prefill an email with your reference — just press send.</div>
+      </div>
+    </form>
+
+    <div id="sent" class="result" role="status" aria-live="polite"></div>
+
+    <p class="privacy">🔒 <b data-i="privLbl">We store only your payment reference — never card or account credentials.</b>
+      <span data-i="privBody">Protected under the Data Privacy Act (RA 10173); used only for your case.</span></p>
+  </main>
+
+  <footer>
+    <b>TagaLigtas</b> <span data-i="footBy">by</span> ETM-Tax Agent Office [ETM-TAO], Inc.<br>
+    <span data-i="emailFoot">Email:</span> <a href="mailto:taxspecialista@kataxpayer.com">taxspecialista@kataxpayer.com</a><br>
+    <span data-i="footNote">This page collects no card data and processes no payment. It records a reference you send us. Not tax or legal advice.</span>
+  </footer>
+</div>
+
+<script>
+  const EMAIL = "taxspecialista@kataxpayer.com";
+  const SUBJECT = "Case Appraisal payment reference";
+
+  // ===================== PROVIDER-NEUTRAL CHECKOUT =====================
+  // The UI may show many providers, but the RELEASE LOGIC MUST NOT LIVE IN THE BUTTON.
+  // This static page renders cards from PROVIDERS and hands off by email. Whether/when the
+  // service is released is decided by a backend PAYMENT STATUS MACHINE (documented below),
+  // per each provider's releaseMode. This page stores ONLY public display + capability
+  // metadata — NEVER API keys, webhook secrets, account passwords, or private tokens.
+  //
+  // Per-provider fields:
+  //   id            → stable key                       type   → "manual" | "gateway"
+  //   name{en,tl,zh}→ trilingual label                 active → shown in UI when true
+  //   detail        → HTML under the name ("" = none)  instructions{..} → optional helper line
+  //   rail          → operational track                verification → how payment is confirmed
+  //   factumSource  → what counts as PROOF of payment   (email/screenshot is NOTICE, not Factum)
+  //   releaseMode   → the doctrine, explicit:
+  //       "hold-until-verified"        → manual rails: ALWAYS human review before release
+  //       "auto-after-paid-webhook"    → gateway: release only after a verified paid webhook
+  //       "auto-only-if-ledger-confirmed" → gateway: release only after ledger/settlement match
+  //
+  // BACKEND PAYMENT STATUS MACHINE (NOT implemented in this static page):
+  //   created → awaiting_payment → notice_received → verifying → paid_confirmed
+  //           → invoice_issued → service_released        (branch: → manual_review)
+  // Doctrine: the button NEVER releases the service. A pasted reference / screenshot / email
+  // is a NOTICE, not Factum. Manual rails always hold; gateway rails auto-release only after
+  // webhook / API / ledger confirmation (releaseMode). active:false = in code, not yet in UI.
+  // Rollout order: PayMongo → BPI OneQR → UnionBank.
+  const PROVIDERS = [
+    // FILL-IN gcash: replace the number + registered name below.
+    { id:"gcash", type:"manual", active:true, icon:"📱",
+      name:{en:"GCash", tl:"GCash", zh:"GCash"},
+      rail:"Track G", verification:"manual", factumSource:"ledger-review", releaseMode:"hold-until-verified",
+      detail:`<b class="fillin" data-fill="gcash">0917 XXX XXXX</b> — <span class="fillin" data-fill="gcash">ETM-TAO / [Registered Name]</span>`,
+      instructions:{ en:"Send payment to the GCash number above, then submit your reference.",
+                     tl:"Magpadala sa GCash number sa itaas, tapos isumite ang iyong reference.",
+                     zh:"向上方 GCash 号码付款，然后提交你的参考号。" } },
+    // FILL-IN bank: replace bank name, account name, account number below.
+    { id:"bank", type:"manual", active:true, icon:"🏦",
+      name:{en:"Bank Transfer", tl:"Bank Transfer", zh:"银行转账"},
+      rail:"Track G", verification:"manual", factumSource:"bank-ledger", releaseMode:"hold-until-verified",
+      detail:`<span class="fillin" data-fill="bank">[Bank name]</span> · <span class="fillin" data-fill="bank">[Account name]</span> · <b class="fillin" data-fill="bank">[Account number]</b>` },
+    // ---- pre-listed, inactive gateways (flip active:true + wire the backend hook when launching) ----
+    { id:"paymongo",  type:"gateway", active:false, icon:"💳",
+      name:{en:"PayMongo Checkout", tl:"PayMongo Checkout", zh:"PayMongo Checkout"},
+      rail:"Track A", verification:"webhook", factumSource:"payment-provider-event", releaseMode:"auto-after-paid-webhook", detail:"" },
+    { id:"bpi-oneqr", type:"gateway", active:false, icon:"🔳",
+      name:{en:"BPI OneQR", tl:"BPI OneQR", zh:"BPI OneQR"},
+      rail:"Track A/B", verification:"portal-or-api", factumSource:"settlement-report", releaseMode:"auto-only-if-ledger-confirmed", detail:"" },
+    { id:"unionbank", type:"gateway", active:false, icon:"🏦",
+      name:{en:"UnionBank QR", tl:"UnionBank QR", zh:"UnionBank QR"},
+      rail:"Track A/B", verification:"portal-or-api", factumSource:"settlement-report", releaseMode:"auto-only-if-ledger-confirmed", detail:"" },
+  ];
+  // GATEWAY HOOK: when you activate a type:"gateway" provider, replace its detail with the
+  // provider's QR/redirect UI and confirm payment SERVER-SIDE via its verification method.
+  // Release is still governed by the backend status machine + releaseMode — not this page.
+  // =====================================================================
+
+  const I18N = {
+    en:{ back:"← Back", step:"Step 3 · Settle your Case Appraisal", title:"Settle your Executive Summary",
+      intro:"Pay the fixed fee below, then paste your payment reference. We confirm by email and begin your appraisal.",
+      invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Total due",
+      invCredit:"Credited to your case if you proceed to a Statutory Demand.",
+      payHow:"How to pay",
+      payAmt:"Send exactly <b>₱5,600.00</b>. Use your <b>name</b> as the note/message so we can match it.",
+      refLbl:"Paste your payment reference number", refWarn:"Please paste your reference number first.",
+      refHint:"On GCash it's the <b>Ref. No.</b> on your receipt. For bank transfers, the <b>transaction / confirmation number</b>.",
+      proofLbl:"Attach your payment screenshot (optional)", proofHint:"A GCash or bank receipt helps us match your payment faster.", proofChosen:f=>`Selected: ${f} · attach this to the email that opens.`,
+      confirmCta:"Confirm my payment →", confirmSub:"We prefill an email with your reference — just press send.",
+      emailFoot:"Email:", footBy:"by",
+      footNote:"This page collects no card data and processes no payment. It records a reference you send us. Not tax or legal advice.",
+      privLbl:"We store only your payment reference — never card or account credentials.", privBody:"Protected under the Data Privacy Act (RA 10173); used only for your case." },
+    tl:{ back:"← Bumalik", step:"Hakbang 3 · Bayaran ang Case Appraisal", title:"Bayaran ang iyong Executive Summary",
+      intro:"Bayaran ang nakatakdang bayad sa baba, tapos i-paste ang iyong reference. Kukumpirmahin namin sa email at sisimulan ang appraisal.",
+      invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Kabuuang babayaran",
+      invCredit:"Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
+      payHow:"Paano magbayad",
+      payAmt:"Magpadala ng eksaktong <b>₱5,600.00</b>. Ilagay ang iyong <b>pangalan</b> sa note/message para matugma namin.",
+      refLbl:"I-paste ang reference number ng bayad", refWarn:"Pakipaste muna ang reference number.",
+      refHint:"Sa GCash ito ang <b>Ref. No.</b> sa resibo. Sa bank transfer, ang <b>transaction / confirmation number</b>.",
+      proofLbl:"I-attach ang screenshot ng bayad (opsyonal)", proofHint:"Nakakatulong ang resibo ng GCash o bangko para mas mabilis matugma ang bayad mo.", proofChosen:f=>`Napili: ${f} · i-attach ito sa email na magbubukas.`,
+      confirmCta:"Kumpirmahin ang bayad →", confirmSub:"Maghahanda kami ng email kasama ang reference mo — pindutin lang ang send.",
+      emailFoot:"Email:", footBy:"ng",
+      footNote:"Walang card data na kinokolekta at walang pinoproseso na bayad ang pahinang ito. Nagtatala ito ng reference na ipinadala mo. Hindi tax o legal advice.",
+      privLbl:"Reference number lang ng bayad ang itinatago namin — hindi card o account credentials.", privBody:"Protektado sa ilalim ng Data Privacy Act (RA 10173); para lang sa kaso mo." },
+    zh:{ back:"← 返回", step:"第 3 步 · 结算案件评估", title:"结算你的行政摘要",
+      intro:"支付下方固定费用，然后粘贴你的付款参考号。我们以电邮确认后即开始评估。",
+      invName:"案件评估 — 行政摘要（Executive Summary）", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invFee:"专业费用", invVat:"增值税（12%）", invTotal:"应付总额",
+      invCredit:"若你继续委托法定要求书（Statutory Demand），此费用可抵扣。",
+      payHow:"如何付款",
+      payAmt:"请准确支付 <b>₱5,600.00</b>。在备注/留言中填写你的<b>姓名</b>，方便我们核对。",
+      refLbl:"粘贴你的付款参考号", refWarn:"请先粘贴参考号。",
+      refHint:"GCash 上是收据上的 <b>Ref. No.</b>；银行转账则是<b>交易 / 确认号</b>。",
+      proofLbl:"上传付款截图（可选）", proofHint:"附上 GCash 或银行收据能帮助我们更快核对你的付款。", proofChosen:f=>`已选择：${f} · 请在打开的电邮中附上此文件。`,
+      confirmCta:"确认我的付款 →", confirmSub:"我们会准备一封含参考号的电邮 — 按发送即可。",
+      emailFoot:"电邮：", footBy:"由",
+      footNote:"本页不收集任何银行卡数据，也不处理付款。它仅记录你发来的参考号。非税务或法律意见。",
+      privLbl:"我们只保存你的付款参考号 — 绝不保存银行卡或账户凭据。", privBody:"受《数据隐私法》(RA 10173) 保护；仅用于你的案件。" }
+  };
+  const SHARE = {
+    en:{ msg:r=>`Hi TagaLigtas — I've paid the ₱5,600 for my Case Appraisal (Executive Summary). My payment reference is:\n${r}`,
+         steps:`Almost done — we've prepared a ready-to-send message to ${EMAIL} with your reference. Open it in Gmail (or your email app) and press Send (attach your screenshot too if you have one). Nothing is sent until you press Send. Or copy the message below and email it yourself.`,
+         ok:"✓ Copied to your clipboard.", fail:"Couldn't copy automatically — press and hold the box below to select it, then tap Copy.", gmail:"Open in Gmail →", open:"Open in my email app →" },
+    tl:{ msg:r=>`Kumusta TagaLigtas — nabayaran ko na ang ₱5,600 para sa Case Appraisal (Executive Summary). Ang aking payment reference ay:\n${r}`,
+         steps:`Malapit na — nakahanda na ang mensahe papunta sa ${EMAIL} kasama ang reference mo. Buksan ito sa Gmail (o sa iyong email app) at pindutin ang Send (i-attach din ang screenshot kung meron). Walang maipapadala hangga't hindi mo pinipindot ang Send. O kopyahin ang mensahe sa baba at i-email mo mismo.`,
+         ok:"✓ Nakopya na sa clipboard.", fail:"Hindi awtomatikong nakopya — pindutin nang matagal ang kahon sa baba, tapos i-tap ang Copy.", gmail:"Buksan sa Gmail →", open:"Buksan sa email app →" },
+    zh:{ msg:r=>`你好 TagaLigtas — 我已支付案件评估（行政摘要）的 ₱5,600。我的付款参考号是：\n${r}`,
+         steps:`就快好了 — 我们已把含你参考号、发往 ${EMAIL} 的邮件填好。在 Gmail（或你的邮件应用）中打开并按发送（如有截图请一并附上）。未按发送前不会发出任何邮件。或复制下方消息自行发送。`,
+         ok:"✓ 已复制到剪贴板。", fail:"未能自动复制 — 长按下方方框选中，然后点复制。", gmail:"在 Gmail 中打开 →", open:"用邮件应用打开 →" }
+  };
+
+  let LANG="en", lastRef="", lastOk=false, lastFile="";
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  // Email body carries the reference plus (if chosen) the screenshot filename as a reminder.
+  // BACKEND HOOK: when a storage backend exists, upload the File object instead of naming it here.
+  function emailBody(){
+    let b = SHARE[LANG].msg(lastRef);
+    if(lastFile) b += `\n\n(Payment screenshot to attach: ${lastFile})`;
+    return b;
+  }
+  // Render the active payment methods from PROVIDERS (provider-neutral checkout).
+  function renderMethods(){
+    const host=document.getElementById("methods");
+    host.innerHTML = PROVIDERS.filter(p=>p.active).map(p=>{
+      const nm=(p.name && (p.name[LANG]||p.name.en))||p.id;
+      const det=p.detail ? `<div class="m-detail">${p.detail}</div>` : "";
+      const ins=(p.instructions && (p.instructions[LANG]||p.instructions.en));
+      const insHtml=ins ? `<div class="m-inst">${ins}</div>` : "";
+      return `<div class="method"><div class="ico" aria-hidden="true">${p.icon}</div>`
+        + `<div><div class="m-name">${nm}</div>${det}${insHtml}</div></div>`;
+    }).join("");
+  }
+  function applyLang(lang){
+    LANG=lang;
+    document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="tl"?"tl":"en");
+    document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(I18N[lang][k]!=null) el.innerHTML=I18N[lang][k]; });
+    renderMethods();
+    document.querySelectorAll(".langtabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
+    var _pn=document.getElementById("proofName"); if(lastFile && _pn) _pn.textContent=I18N[lang].proofChosen(lastFile);
+    const sm=document.getElementById("sent"); if(lastRef && sm.classList.contains("show")) renderSent();
+  }
+  document.querySelectorAll(".langtabs button").forEach(b=>b.addEventListener("click",()=>applyLang(b.dataset.lang)));
+
+  const refEl=document.getElementById("ref"), refWarn=document.getElementById("refWarn"), sent=document.getElementById("sent");
+  function renderSent(ok){
+    if(typeof ok==="boolean") lastOk=ok;
+    const S=SHARE[LANG];
+    const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(emailBody())}`;
+    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}&su=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(emailBody())}`;
+    sent.innerHTML = `<div class="rbody"><b>${S.steps}</b></div>`
+      + `<div class="msgbox">${esc(emailBody())}</div>`
+      + `<div style="font-size:13px;color:var(--slate);margin-top:8px">${lastOk?S.ok:S.fail}</div>`
+      + `<a class="btn btn-primary" href="${gmail}" target="_blank" rel="noopener" style="margin-top:12px">${S.gmail}</a>`
+      + `<a class="btn btn-ghost" href="${mailto}" style="margin-top:9px">${S.open}</a>`;
+    sent.classList.add("show");
+  }
+  refEl.addEventListener("input",()=>{ if(refEl.value.trim()) refWarn.classList.add("hidden"); });
+  // Checkout attachment: capture the chosen file's name for the email reminder.
+  const proofEl=document.getElementById("proof"), proofName=document.getElementById("proofName");
+  proofEl.addEventListener("change",()=>{
+    lastFile = (proofEl.files && proofEl.files[0]) ? proofEl.files[0].name : "";
+    proofName.textContent = lastFile ? I18N[LANG].proofChosen(lastFile) : "";
+    if(document.getElementById("sent").classList.contains("show")) renderSent();
+  });
+  document.getElementById("settleForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const v=refEl.value.trim();
+    if(!v){ refWarn.classList.remove("hidden"); refEl.focus(); return; }
+    lastRef=v;
+    renderSent(false);              // show the email buttons immediately, regardless of clipboard
+    const text=emailBody();
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>renderSent(true)).catch(()=>{});
+    }
+    sent.scrollIntoView({behavior:"smooth",block:"center"});
+  });
+  applyLang("en");
+</script>
+</body>
+</html>
