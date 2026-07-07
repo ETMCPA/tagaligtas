@@ -123,7 +123,8 @@
 
     <div class="invoice">
       <div class="inv-head"><span data-i="invName">Case Appraisal — Executive Summary</span>
-        <div class="sub" data-i="invBy">ETM-Tax Agent Office [ETM-TAO], Inc.</div></div>
+        <div class="sub" data-i="invBy">ETM-Tax Agent Office [ETM-TAO], Inc.</div>
+        <div class="sub" id="invOrder"></div></div>
       <div class="inv-row"><span class="lbl" data-i="invFee">Professional fee</span><span class="val">₱5,000.00</span></div>
       <!-- FILL-IN: adjust VAT line if you are non-VAT / 8% / VAT-exempt -->
       <div class="inv-row"><span class="lbl" data-i="invVat">VAT (12%)</span><span class="val">₱600.00</span></div>
@@ -137,7 +138,7 @@
            To fill in GCash/bank details or switch on a gateway, edit PROVIDERS — not this
            markup. Search "FILL-IN" in that config. -->
       <div id="methods"></div>
-      <p class="hint" data-i="payAmt">Send exactly <b>₱5,600.00</b>. Use your <b>name</b> as the note/message so we can match it.</p>
+      <p class="hint"><span data-i="payAmt">Send exactly <b>₱5,600.00</b>.</span> <span id="payNote"></span></p>
     </div>
 
     <form id="settleForm">
@@ -175,6 +176,8 @@
 <script>
   const EMAIL = "taxspecialista@kataxpayer.com";
   const SUBJECT = "Case Appraisal payment reference";
+  // Order No. carried from the Order Slip (?order=...) — shown on the invoice and used as the payment note for matching.
+  var ORDER_NO = (function(){ var m=/[?&]order=([^&#]+)/.exec(location.search); return m?decodeURIComponent(m[1]):""; })();
 
   // ===================== PROVIDER-NEUTRAL CHECKOUT =====================
   // The UI may show many providers, but the RELEASE LOGIC MUST NOT LIVE IN THE BUTTON.
@@ -238,7 +241,7 @@
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Total due",
       invCredit:"Credited to your case if you proceed to a Statutory Demand.",
       payHow:"How to pay",
-      payAmt:"Send exactly <b>₱5,600.00</b>. Use your <b>name</b> as the note/message so we can match it.",
+      payAmt:"Send exactly <b>₱5,600.00</b>.", noteName:"Use your <b>name</b> as the note/message so we can match it.", noteOrder:"Put your Order No. <b>{O}</b> as the note/message so we can match it.",
       refLbl:"Paste your payment reference number", refWarn:"Please paste your reference number first.",
       refHint:"On GCash it's the <b>Ref. No.</b> on your receipt. For bank transfers, the <b>transaction / confirmation number</b>.",
       proofLbl:"Attach your payment screenshot (optional)", proofHint:"A GCash or bank receipt helps us match your payment faster.", proofChosen:f=>`Selected: ${f} · attach this to the email that opens.`,
@@ -252,7 +255,7 @@
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Kabuuang babayaran",
       invCredit:"Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
       payHow:"Paano magbayad",
-      payAmt:"Magpadala ng eksaktong <b>₱5,600.00</b>. Ilagay ang iyong <b>pangalan</b> sa note/message para matugma namin.",
+      payAmt:"Magpadala ng eksaktong <b>₱5,600.00</b>.", noteName:"Ilagay ang iyong <b>pangalan</b> sa note/message para matugma namin.", noteOrder:"Ilagay ang iyong Order No. <b>{O}</b> sa note/message para matugma namin.",
       refLbl:"I-paste ang reference number ng bayad", refWarn:"Pakipaste muna ang reference number.",
       refHint:"Sa GCash ito ang <b>Ref. No.</b> sa resibo. Sa bank transfer, ang <b>transaction / confirmation number</b>.",
       proofLbl:"I-attach ang screenshot ng bayad (opsyonal)", proofHint:"Nakakatulong ang resibo ng GCash o bangko para mas mabilis matugma ang bayad mo.", proofChosen:f=>`Napili: ${f} · i-attach ito sa email na magbubukas.`,
@@ -266,7 +269,7 @@
       invFee:"专业费用", invVat:"增值税（12%）", invTotal:"应付总额",
       invCredit:"若你继续委托法定要求书（Statutory Demand），此费用可抵扣。",
       payHow:"如何付款",
-      payAmt:"请准确支付 <b>₱5,600.00</b>。在备注/留言中填写你的<b>姓名</b>，方便我们核对。",
+      payAmt:"请准确支付 <b>₱5,600.00</b>。", noteName:"在备注/留言中填写你的<b>姓名</b>，方便我们核对。", noteOrder:"在备注/留言中填写你的订单号 <b>{O}</b>，方便我们核对。",
       refLbl:"粘贴你的付款参考号", refWarn:"请先粘贴参考号。",
       refHint:"GCash 上是收据上的 <b>Ref. No.</b>；银行转账则是<b>交易 / 确认号</b>。",
       proofLbl:"上传付款截图（可选）", proofHint:"附上 GCash 或银行收据能帮助我们更快核对你的付款。", proofChosen:f=>`已选择：${f} · 请在打开的电邮中附上此文件。`,
@@ -293,6 +296,7 @@
   // BACKEND HOOK: when a storage backend exists, upload the File object instead of naming it here.
   function emailBody(){
     let b = SHARE[LANG].msg(lastRef);
+    if(ORDER_NO) b = `Order No: ${ORDER_NO}\n` + b;
     if(lastFile) b += `\n\n(Payment screenshot to attach: ${lastFile})`;
     return b;
   }
@@ -313,6 +317,8 @@
     document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="tl"?"tl":"en");
     document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(I18N[lang][k]!=null) el.innerHTML=I18N[lang][k]; });
     renderMethods();
+    var _po=document.getElementById("payNote"); if(_po) _po.innerHTML = ORDER_NO ? (I18N[lang].noteOrder||"").replace("{O}", ORDER_NO) : (I18N[lang].noteName||"");
+    var _io=document.getElementById("invOrder"); if(_io) _io.textContent = ORDER_NO ? ("Order No.: "+ORDER_NO) : "";
     document.querySelectorAll(".langtabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
     var _pn=document.getElementById("proofName"); if(lastFile && _pn) _pn.textContent=I18N[lang].proofChosen(lastFile);
     const sm=document.getElementById("sent"); if(lastRef && sm.classList.contains("show")) renderSent();

@@ -147,9 +147,9 @@
       <div class="slip">
         <div class="slip-head">
           <span class="lbl" data-i="soOrderNo">Order No.</span>
-          <span class="ono">TL-ES-2026-000001</span>
+          <span class="ono" id="orderNo">TL-ES-…</span>
         </div>
-        <div class="slip-note" data-i="slipNote">Example number — your Order No. is assigned when we confirm. The fields below are completed after we read your shared folder.</div>
+        <div class="slip-note" data-i="slipNote">This is your Order No. — use it as your payment reference. The fields below are completed after we read your shared folder.</div>
         <div class="slip-row"><span class="k" data-i="soTaxpayer">Taxpayer / Company Name</span><span class="v pending" data-i="pend1" data-pending="1">Pending folder review</span></div>
         <div class="slip-row"><span class="k" data-i="soLoa">LOA No.</span><span class="v pending" data-i="pend2" data-pending="1">Pending folder review</span></div>
         <div class="slip-row"><span class="k" data-i="soProduct">Product</span><span class="v" data-i="productVal">Executive Summary for Letter of Authority No. [LOA No.]</span></div>
@@ -183,6 +183,13 @@
   const EMAIL = "taxspecialista@kataxpayer.com";
   const SUBJECT = "New Executive Summary order";
   const PAY_URL = "settlement.html";
+  // Provisional Order No. — unique per order, generated in-browser until a server counter exists.
+  // Format: TL-ES-YYMMDD-<last5 of epoch><rand digit>. Included in the order email + carried to checkout.
+  function makeOrderNo(){
+    var d=new Date(), p=n=>("0"+n).slice(-2);
+    return "TL-ES-"+(""+d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())+"-"+(""+d.getTime()).slice(-5)+Math.floor(Math.random()*10);
+  }
+  var ORDER_NO = makeOrderNo();
 
   const I18N = {
     en:{ back:"← Back", step:"Step 3 · Order Slip", title:"Confirm your order",
@@ -193,7 +200,7 @@
       confirmLbl:"I confirm my details and the extracted facts shown below are correct.",
       warnFields:"Please complete all fields and tick the confirmation box.",
       secSlip:"Order Slip", secSlipHint:"Prepared by TagaLigtas from your shared folder.",
-      soOrderNo:"Order No.", slipNote:"Example number — your Order No. is assigned when we confirm. The fields below are completed after we read your shared folder.",
+      soOrderNo:"Order No.", slipNote:"This is your Order No. — use it as your payment reference. The fields below are completed after we read your shared folder.",
       soTaxpayer:"Taxpayer / Company Name", soLoa:"LOA No.", soProduct:"Product",
       productVal:"Executive Summary for Letter of Authority No. [LOA No.]",
       soAmount:"Amount Due", soRdo:"BIR Office / RDO", soPeriod:"Taxable Period", soDocDate:"Document Date",
@@ -211,7 +218,7 @@
       confirmLbl:"Kinukumpirma ko na tama ang aking mga detalye at ang mga extracted na impormasyong nakalista sa ibaba.",
       warnFields:"Pakumpleto ang lahat ng field at lagyan ng check ang kahon ng kumpirmasyon.",
       secSlip:"Order Slip", secSlipHint:"Inihanda ng TagaLigtas mula sa iyong folder.",
-      soOrderNo:"Order No.", slipNote:"Halimbawang numero — itatalaga ang iyong Order No. kapag kinumpirma na. Ang mga field sa baba ay kukumpletuhin pagkatapos naming basahin ang iyong folder.",
+      soOrderNo:"Order No.", slipNote:"Ito ang iyong Order No. — gamitin ito bilang reference ng bayad. Ang mga field sa baba ay kukumpletuhin pagkatapos naming basahin ang iyong folder.",
       soTaxpayer:"Taxpayer / Pangalan ng Kumpanya", soLoa:"LOA No.", soProduct:"Produkto",
       productVal:"Executive Summary para sa Letter of Authority No. [LOA No.]",
       soAmount:"Halagang Babayaran", soRdo:"BIR Office / RDO", soPeriod:"Taxable Period", soDocDate:"Petsa ng Dokumento",
@@ -229,7 +236,7 @@
       confirmLbl:"我确认我的资料及下方所示的提取事实均正确无误。",
       warnFields:"请填写所有栏位并勾选确认框。",
       secSlip:"订单单据", secSlipHint:"由 TagaLigtas 依据你分享的文件夹整理。",
-      soOrderNo:"订单号", slipNote:"示例编号 — 确认后将分配你的订单号。下方栏位将在我们读取你分享的文件夹后完成。",
+      soOrderNo:"订单号", slipNote:"这是你的订单号 — 请用作付款参考号。下方栏位将在我们读取你分享的文件夹后完成。",
       soTaxpayer:"纳税人 / 公司名称", soLoa:"授权函号（LOA No.）", soProduct:"产品",
       productVal:"针对授权函第 [LOA No.] 号的行政摘要（Executive Summary）",
       soAmount:"应付金额", soRdo:"BIR 办公室 / RDO", soPeriod:"课税期间", soDocDate:"文件日期",
@@ -241,15 +248,15 @@
       privLbl:"我们仅以查看者身份读取你分享的文件夹。", privBody:"你拥有自己的数据；不作任何保留。受《数据隐私法》(RA 10173) 保护。" }
   };
   const SHARE = {
-    en:{ msg:d=>`Hi TagaLigtas — I'd like to order an Executive Summary for my Letter of Authority.\n\nName: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProduct: Executive Summary for my LoA\nAmount Due: ₱5,600.00\nI confirm the details above are correct.`,
+    en:{ msg:d=>`Hi TagaLigtas — I'd like to order an Executive Summary for my Letter of Authority.\n\nOrder No: ${ORDER_NO}\nName: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProduct: Executive Summary for my LoA\nAmount Due: ₱5,600.00\nI confirm the details above are correct.`,
          steps:`Almost done — we've prepared a ready-to-send message to ${EMAIL}. Open it in Gmail (or your email app) and press Send. Nothing is sent until you press Send. Then continue to payment.`,
          ok:"✓ Copied to your clipboard.", fail:"Couldn't copy automatically — press and hold the box below to select it, then tap Copy.",
          gmail:"Open in Gmail →", open:"Open in my email app →", pay:"Continue to payment →" },
-    tl:{ msg:d=>`Kumusta TagaLigtas — gusto kong mag-order ng Executive Summary para sa aking Letter of Authority.\n\nPangalan: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProdukto: Executive Summary para sa aking LoA\nHalagang Babayaran: ₱5,600.00\nKinukumpirma ko na tama ang mga detalye sa itaas.`,
+    tl:{ msg:d=>`Kumusta TagaLigtas — gusto kong mag-order ng Executive Summary para sa aking Letter of Authority.\n\nOrder No: ${ORDER_NO}\nPangalan: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProdukto: Executive Summary para sa aking LoA\nHalagang Babayaran: ₱5,600.00\nKinukumpirma ko na tama ang mga detalye sa itaas.`,
          steps:`Malapit na — nakahanda na ang mensahe papunta sa ${EMAIL}. Buksan ito sa Gmail (o sa iyong email app) at pindutin ang Send. Walang maipapadala hangga't hindi mo pinipindot ang Send. Tapos magpatuloy sa bayad.`,
          ok:"✓ Nakopya na sa clipboard.", fail:"Hindi awtomatikong nakopya — pindutin nang matagal ang kahon sa baba, tapos i-tap ang Copy.",
          gmail:"Buksan sa Gmail →", open:"Buksan sa email app →", pay:"Magpatuloy sa bayad →" },
-    zh:{ msg:d=>`你好 TagaLigtas — 我想为我的授权函（Letter of Authority）订购行政摘要。\n\n姓名：${d.name}\n电邮：${d.email}\n手机：${d.mobile}\nGoogle Drive 文件夹：${d.drive}\n\n产品：针对我的 LoA 的行政摘要\n应付金额：₱5,600.00\n我确认以上资料正确无误。`,
+    zh:{ msg:d=>`你好 TagaLigtas — 我想为我的授权函（Letter of Authority）订购行政摘要。\n\n订单号：${ORDER_NO}\n姓名：${d.name}\n电邮：${d.email}\n手机：${d.mobile}\nGoogle Drive 文件夹：${d.drive}\n\n产品：针对我的 LoA 的行政摘要\n应付金额：₱5,600.00\n我确认以上资料正确无误。`,
          steps:`就快好了 — 我们已把发往 ${EMAIL} 的邮件填好。在 Gmail（或你的邮件应用）中打开并按发送。未按发送前不会发出任何邮件。然后继续付款。`,
          ok:"✓ 已复制到剪贴板。", fail:"未能自动复制 — 长按下方方框选中，然后点复制。",
          gmail:"在 Gmail 中打开 →", open:"用邮件应用打开 →", pay:"继续付款 →" }
@@ -283,7 +290,7 @@
       + `<div style="font-size:13px;color:var(--slate);margin-top:8px">${lastOk?S.ok:S.fail}</div>`
       + `<a class="btn btn-primary" href="${gmail}" target="_blank" rel="noopener" style="margin-top:12px">${S.gmail}</a>`
       + `<a class="btn btn-ghost" href="${mailto}" style="margin-top:9px">${S.open}</a>`
-      + `<a class="btn btn-ghost" href="${PAY_URL}" style="margin-top:9px">${S.pay}</a>`;
+      + `<a class="btn btn-ghost" href="${PAY_URL}?order=${encodeURIComponent(ORDER_NO)}" style="margin-top:9px">${S.pay}</a>`;
     sent.classList.add("show");
   }
   [ "uname","uemail","umobile","udrive","uconfirm" ].forEach(id=>el(id).addEventListener("input",()=>formWarn.classList.add("hidden")));
@@ -303,6 +310,8 @@
     }
     sent.scrollIntoView({behavior:"smooth",block:"center"});
   });
+  // Show the generated Order No. on the slip
+  (function(){ var o=el("orderNo"); if(o) o.textContent=ORDER_NO; })();
   // Carry-forward from the funnel: prefill the Drive link if passed as ?drive=
   (function(){ var m=/[?&]drive=([^&#]+)/.exec(location.search); if(m){ try{ el("udrive").value=decodeURIComponent(m[1]); }catch(e){} } })();
   applyLang("en");
