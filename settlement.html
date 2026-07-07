@@ -139,7 +139,7 @@
            markup. Search "FILL-IN" in that config. -->
       <div id="methods"></div>
       <div id="payErr" class="warn hidden"></div>
-      <p class="hint"><span data-i="payAmt">Send exactly <b>₱5,600.00</b>.</span> <span id="payNote"></span></p>
+      <p class="hint" id="payHint"><span data-i="payAmt">Send exactly <b>₱5,600.00</b>.</span> <span id="payNote"></span></p>
     </div>
 
     <form id="settleForm">
@@ -171,7 +171,7 @@
     <b>TagaLigtas</b> <span data-i="footBy">by</span> ETM-Tax Agent Office [ETM-TAO], Inc.<br>
     <a data-i="fbDetails" href="https://www.facebook.com/kataxpayer" target="_blank" rel="noopener">Visit Kataxpayer FB for Details</a><br>
     <a href="terms.html">Terms</a> · <a href="privacy.html">Privacy</a> · <a href="refund.html">Refund</a><br>
-    <span data-i="footNote">This page collects no card data and processes no payment. It records a reference you send us. Not tax or legal advice.</span>
+    <span data-i="footNote">This page stores no card details — payments are processed securely by our payment provider. Not tax or legal advice.</span>
   </footer>
 </div>
 
@@ -253,7 +253,7 @@
       proofLbl:"Attach your payment screenshot (optional)", proofHint:"A GCash or bank receipt helps us match your payment faster.", proofChosen:f=>`Selected: ${f} · attach this to the email that opens.`,
       confirmCta:"Confirm my payment →", confirmSub:"We prefill an email with your reference — just press send.",
       fbDetails:"Visit Kataxpayer FB for Details", footBy:"by",
-      footNote:"This page collects no card data and processes no payment. It records a reference you send us. Not tax or legal advice.",
+      footNote:"This page stores no card details — payments are processed securely by our payment provider. Not tax or legal advice.",
       privLbl:"We store only your payment reference — never card or account credentials.", privBody:"Protected under the Data Privacy Act (RA 10173); used only for your case." },
     tl:{ back:"← Bumalik", step:"Hakbang 3 · Bayaran ang Case Appraisal", title:"Bayaran ang iyong Executive Summary",
       intro:"Bayaran ang nakatakdang bayad sa baba, tapos i-paste ang iyong reference. Kukumpirmahin namin sa email at sisimulan ang appraisal.",
@@ -268,7 +268,7 @@
       proofLbl:"I-attach ang screenshot ng bayad (opsyonal)", proofHint:"Nakakatulong ang resibo ng GCash o bangko para mas mabilis matugma ang bayad mo.", proofChosen:f=>`Napili: ${f} · i-attach ito sa email na magbubukas.`,
       confirmCta:"Kumpirmahin ang bayad →", confirmSub:"Maghahanda kami ng email kasama ang reference mo — pindutin lang ang send.",
       fbDetails:"Bisitahin ang Kataxpayer FB para sa Detalye", footBy:"ng",
-      footNote:"Walang card data na kinokolekta at walang pinoproseso na bayad ang pahinang ito. Nagtatala ito ng reference na ipinadala mo. Hindi tax o legal advice.",
+      footNote:"Hindi nag-iimbak ng card details ang pahinang ito — ligtas na pinoproseso ang bayad ng aming payment provider. Hindi tax o legal advice.",
       privLbl:"Reference number lang ng bayad ang itinatago namin — hindi card o account credentials.", privBody:"Protektado sa ilalim ng Data Privacy Act (RA 10173); para lang sa kaso mo." },
     zh:{ back:"← 返回", step:"第 3 步 · 结算案件评估", title:"结算你的行政摘要",
       intro:"支付下方固定费用，然后粘贴你的付款参考号。我们以电邮确认后即开始评估。",
@@ -283,7 +283,7 @@
       proofLbl:"上传付款截图（可选）", proofHint:"附上 GCash 或银行收据能帮助我们更快核对你的付款。", proofChosen:f=>`已选择：${f} · 请在打开的电邮中附上此文件。`,
       confirmCta:"确认我的付款 →", confirmSub:"我们会准备一封含参考号的电邮 — 按发送即可。",
       fbDetails:"访问 Kataxpayer FB 了解详情", footBy:"由",
-      footNote:"本页不收集任何银行卡数据，也不处理付款。它仅记录你发来的参考号。非税务或法律意见。",
+      footNote:"本页不存储任何银行卡信息 — 付款由我们的支付服务商安全处理。非税务或法律意见。",
       privLbl:"我们只保存你的付款参考号 — 绝不保存银行卡或账户凭据。", privBody:"受《数据隐私法》(RA 10173) 保护；仅用于你的案件。" }
   };
   const SHARE = {
@@ -407,6 +407,15 @@
     sent.scrollIntoView({behavior:"smooth",block:"center"});
   });
   applyLang("en");
+  // Manual reference-paste + screenshot form is only for MANUAL rails (GCash/bank). With a
+  // gateway (PayMongo) the webhook auto-reconciles, so hide the manual block if no manual rail is active.
+  (function(){
+    const hasManual = PROVIDERS.some(p=>p.active && p.type==="manual");
+    if(!hasManual){
+      ["settleForm","payHint"].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display="none"; });
+      const pv=document.querySelector(".privacy"); if(pv) pv.style.display="none";
+    }
+  })();
   // Returning from a successful PayMongo checkout (success_url has ?paid=1): acknowledge.
   (function(){ if(/[?&]paid=1/.test(location.search)){ const s=document.getElementById("sent"); if(s){ s.innerHTML='<b>'+(I18N[LANG].paidThanks)+'</b>'; s.classList.add("show"); s.scrollIntoView({behavior:"smooth",block:"center"}); } } })();
 </script>
