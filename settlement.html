@@ -138,6 +138,7 @@
            To fill in GCash/bank details or switch on a gateway, edit PROVIDERS — not this
            markup. Search "FILL-IN" in that config. -->
       <div id="methods"></div>
+      <div id="payErr" class="warn hidden"></div>
       <p class="hint"><span data-i="payAmt">Send exactly <b>₱5,600.00</b>.</span> <span id="payNote"></span></p>
     </div>
 
@@ -219,8 +220,8 @@
       rail:"Track G", verification:"manual", factumSource:"bank-ledger", releaseMode:"hold-until-verified",
       detail:`<span class="fillin" data-fill="bank">[Bank name]</span> · <span class="fillin" data-fill="bank">[Account name]</span> · <b class="fillin" data-fill="bank">[Account number]</b>` },
     // ---- pre-listed, inactive gateways (flip active:true + wire the backend hook when launching) ----
-    { id:"paymongo",  type:"gateway", active:false, icon:"💳",
-      name:{en:"PayMongo Checkout", tl:"PayMongo Checkout", zh:"PayMongo Checkout"},
+    { id:"paymongo",  type:"gateway", active:true, icon:"💳",
+      name:{en:"Pay online (card / GCash / Maya)", tl:"Magbayad online (card / GCash / Maya)", zh:"在线支付（银行卡 / GCash / Maya）"},
       rail:"Track A", verification:"webhook", factumSource:"payment-provider-event", releaseMode:"auto-after-paid-webhook", detail:"" },
     { id:"bpi-oneqr", type:"gateway", active:false, icon:"🔳",
       name:{en:"BPI OneQR", tl:"BPI OneQR", zh:"BPI OneQR"},
@@ -240,7 +241,7 @@
       invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Total due",
       invCredit:"Credited to your case if you proceed to a Statutory Demand.",
-      payHow:"How to pay",
+      payHow:"How to pay", payOnlineCta:"Pay ₱5,600 online →", payErr:"Sorry, couldn't start online payment. Please try again, or use GCash/bank below.", paidThanks:"✓ Payment received — we're confirming it now and will email you shortly. You may close this page.",
       payAmt:"Send exactly <b>₱5,600.00</b>.", noteName:"Use your <b>name</b> as the note/message so we can match it.", noteOrder:"Put your Order No. <b>{O}</b> as the note/message so we can match it.",
       refLbl:"Paste your payment reference number", refWarn:"Please paste your reference number first.",
       refHint:"On GCash it's the <b>Ref. No.</b> on your receipt. For bank transfers, the <b>transaction / confirmation number</b>.",
@@ -254,7 +255,7 @@
       invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Kabuuang babayaran",
       invCredit:"Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
-      payHow:"Paano magbayad",
+      payHow:"Paano magbayad", payOnlineCta:"Bayaran ang ₱5,600 online →", payErr:"Paumanhin, hindi masimulan ang online payment. Subukan muli, o gamitin ang GCash/bank sa baba.", paidThanks:"✓ Natanggap ang bayad — kinukumpirma namin ngayon at mag-e-email kami sa iyo. Puwede mo nang isara ang pahinang ito.",
       payAmt:"Magpadala ng eksaktong <b>₱5,600.00</b>.", noteName:"Ilagay ang iyong <b>pangalan</b> sa note/message para matugma namin.", noteOrder:"Ilagay ang iyong Order No. <b>{O}</b> sa note/message para matugma namin.",
       refLbl:"I-paste ang reference number ng bayad", refWarn:"Pakipaste muna ang reference number.",
       refHint:"Sa GCash ito ang <b>Ref. No.</b> sa resibo. Sa bank transfer, ang <b>transaction / confirmation number</b>.",
@@ -268,7 +269,7 @@
       invName:"案件评估 — 行政摘要（Executive Summary）", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"专业费用", invVat:"增值税（12%）", invTotal:"应付总额",
       invCredit:"若你继续委托法定要求书（Statutory Demand），此费用可抵扣。",
-      payHow:"如何付款",
+      payHow:"如何付款", payOnlineCta:"在线支付 ₱5,600 →", payErr:"抱歉，无法开始在线支付。请重试，或使用下方的 GCash/银行。", paidThanks:"✓ 已收到付款 — 我们正在确认，稍后将以电邮通知你。你可以关闭此页面。",
       payAmt:"请准确支付 <b>₱5,600.00</b>。", noteName:"在备注/留言中填写你的<b>姓名</b>，方便我们核对。", noteOrder:"在备注/留言中填写你的订单号 <b>{O}</b>，方便我们核对。",
       refLbl:"粘贴你的付款参考号", refWarn:"请先粘贴参考号。",
       refHint:"GCash 上是收据上的 <b>Ref. No.</b>；银行转账则是<b>交易 / 确认号</b>。",
@@ -300,6 +301,28 @@
     if(lastFile) b += `\n\n(Payment screenshot to attach: ${lastFile})`;
     return b;
   }
+  // PayMongo online checkout (server-side create-checkout Edge Function).
+  const CHECKOUT_FN = "https://aodkheohhbzcgvzhjekx.supabase.co/functions/v1/create-checkout";
+  function ensureOrderNo(){
+    if(ORDER_NO) return ORDER_NO;
+    var d=new Date(), p=n=>("0"+n).slice(-2);
+    ORDER_NO="TL-ES-"+(""+d.getFullYear()).slice(2)+p(d.getMonth()+1)+p(d.getDate())+"-"+(""+d.getTime()).slice(-5)+Math.floor(Math.random()*10);
+    return ORDER_NO;
+  }
+  async function payOnline(btn){
+    const on=ensureOrderNo(), orig=btn.textContent, errEl=document.getElementById("payErr");
+    if(errEl) errEl.classList.add("hidden");
+    btn.disabled=true; btn.textContent="…";
+    try{
+      const res=await fetch(CHECKOUT_FN,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_no:on})});
+      const data=await res.json();
+      if(data && data.checkout_url){ location.href=data.checkout_url; return; }
+      throw new Error(data && data.error ? JSON.stringify(data.error) : "no checkout_url");
+    }catch(e){
+      btn.disabled=false; btn.textContent=orig;
+      if(errEl){ errEl.textContent=I18N[LANG].payErr; errEl.classList.remove("hidden"); }
+    }
+  }
   // Render the active payment methods from PROVIDERS (provider-neutral checkout).
   function renderMethods(){
     const host=document.getElementById("methods");
@@ -308,9 +331,12 @@
       const det=p.detail ? `<div class="m-detail">${p.detail}</div>` : "";
       const ins=(p.instructions && (p.instructions[LANG]||p.instructions.en));
       const insHtml=ins ? `<div class="m-inst">${ins}</div>` : "";
+      const payBtn=(p.type==="gateway")
+        ? `<button type="button" class="btn btn-primary paynow" data-provider="${p.id}" style="margin-top:10px;font-size:14px;padding:12px;min-height:44px">${I18N[LANG].payOnlineCta||"Pay online →"}</button>` : "";
       return `<div class="method"><div class="ico" aria-hidden="true">${p.icon}</div>`
-        + `<div><div class="m-name">${nm}</div>${det}${insHtml}</div></div>`;
+        + `<div style="flex:1">${`<div class="m-name">${nm}</div>`}${det}${insHtml}${payBtn}</div></div>`;
     }).join("");
+    host.querySelectorAll(".paynow").forEach(b=>b.addEventListener("click",()=>payOnline(b)));
   }
   function applyLang(lang){
     LANG=lang;
@@ -359,6 +385,8 @@
     sent.scrollIntoView({behavior:"smooth",block:"center"});
   });
   applyLang("en");
+  // Returning from a successful PayMongo checkout (success_url has ?paid=1): acknowledge.
+  (function(){ if(/[?&]paid=1/.test(location.search)){ const s=document.getElementById("sent"); if(s){ s.innerHTML='<b>'+(I18N[LANG].paidThanks)+'</b>'; s.classList.add("show"); s.scrollIntoView({behavior:"smooth",block:"center"}); } } })();
 </script>
 </body>
 </html>
