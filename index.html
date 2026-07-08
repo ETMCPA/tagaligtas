@@ -102,15 +102,21 @@
   .reassure{font-size:12.5px;color:var(--muted);margin-bottom:18px}
   fieldset{border:none;margin-bottom:16px}
   legend{font-size:13px;font-weight:700;margin-bottom:8px}
-  .opt{display:flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:11px;
+  .opt{display:flex;align-items:flex-start;gap:11px;border:1px solid var(--line);border-radius:11px;
     padding:13px 14px;font-size:14px;font-weight:600;color:var(--slate);cursor:pointer;margin-bottom:8px;min-height:48px}
   .opt input{position:absolute;opacity:0;width:0;height:0}
-  .opt .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 18px}
+  .opt .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 18px;margin-top:2px}
+  .optbody{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .opt-term{font-size:14px;font-weight:800;color:var(--navy);line-height:1.3}
+  .opt-def{font-size:12px;font-weight:500;color:var(--muted);line-height:1.45}
   .opt:has(input:checked){border-color:var(--green);background:var(--green-soft);color:var(--navy)}
   .opt:has(input:checked) .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
   /* Fallback for browsers without :has() (older PH Android): sibling selector fills the dot so the selected option is always visible */
   .opt input:checked ~ .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
   .opt:focus-within{outline:2px solid var(--green);outline-offset:2px}
+  /* JS-toggled fallback for browsers without :has() — mirrors the selected style */
+  .opt.sel{border-color:var(--green);background:var(--green-soft);color:var(--navy)}
+  .opt.sel .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
   label.fl{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
   input[type=date],input[type=url]{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1px solid var(--line);
     border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
@@ -209,12 +215,31 @@
       <form id="triageForm">
         <fieldset>
           <legend data-i="gotLbl">What you got</legend>
-          <label class="opt"><input type="radio" name="doc" value="loa" required><span class="dot"></span><span data-i="optLoa">Letter of Authority (LOA / eLA)</span></label>
-          <label class="opt"><input type="radio" name="doc" value="notice"><span class="dot"></span><span data-i="optNotice">1st, 2nd, or Final Notice — BIR asking for documents</span></label>
-          <label class="opt"><input type="radio" name="doc" value="nod"><span class="dot"></span><span data-i="optNod">NOD — Notice of Discrepancy (BIR says your numbers don't match)</span></label>
-          <label class="opt"><input type="radio" name="doc" value="pan"><span class="dot"></span><span data-i="optPan">PAN — Preliminary Assessment Notice (the BIR's first tax bill)</span></label>
-          <label class="opt"><input type="radio" name="doc" value="d30"><span class="dot"></span><span data-i="optD30">FLD/FAN, FDDA, or FD — the formal tax bill you can protest</span></label>
-          <label class="opt"><input type="radio" name="doc" value="unsure"><span class="dot"></span><span data-i="optUnsure">Not sure — I'll bring it to the appraisal</span></label>
+          <label class="opt"><input type="radio" name="doc" value="loa" required><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optLoa">Letter of Authority (LOA / eLA)</span>
+              <span class="opt-def" data-i="optLoaDef">The BIR's permission to examine your books. Everything starts here — if this paper is defective, the whole audit can be stopped.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="notice"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optNotice">1st, 2nd, or Final Notice</span>
+              <span class="opt-def" data-i="optNoticeDef">The BIR is formally asking for your documents. Ignoring it is how small problems turn into assessments.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="nod"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optNod">NOD — Notice of Discrepancy</span>
+              <span class="opt-def" data-i="optNodDef">The BIR says your numbers don't match theirs. Your chance to explain — before it becomes a tax bill.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="pan"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optPan">PAN — Preliminary Assessment Notice</span>
+              <span class="opt-def" data-i="optPanDef">The BIR's first tax bill. Once it arrives, they believe you owe — and the time to fight back is short.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="fld"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optFld">FLD / FAN</span>
+              <span class="opt-def" data-i="optFldDef">Formal Letter of Demand / Final Assessment Notice — the official demand to pay. Miss the protest deadline and it becomes final and collectible.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="fdda"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optFdda">FDDA</span>
+              <span class="opt-def" data-i="optFddaDef">Final Decision on Disputed Assessment — the BIR's ruling on your protest. Within a non-extendible 30 days: appeal to the CTA, or (if an authorized representative signed it) ask the Commissioner to reconsider — not both.</span></span></label>
+          <!-- FD = Commissioner's Final Decision (confirmed by founder — not Final Demand). -->
+          <label class="opt"><input type="radio" name="doc" value="fd"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optFd">FD — Final Decision</span>
+              <span class="opt-def" data-i="optFdDef">The Commissioner's last administrative word — but not the end. You have 30 days to appeal to the Court of Tax Appeals.</span></span></label>
+          <label class="opt"><input type="radio" name="doc" value="unsure"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="optUnsure">Not sure</span>
+              <span class="opt-def" data-i="optUnsureDef">That's okay. Share the paper and a TaxSpecialist will identify it for you at the appraisal.</span></span></label>
         </fieldset>
 
         <div style="margin-bottom:16px">
@@ -293,8 +318,16 @@
       whatLbl:"What we do:", whatBody:"we check whether the LOA against you was <b>validly issued</b>. If it wasn't, that's often the fastest way to stop an audit — before arguing the numbers. <b>We don't promise a result</b> — we tell you exactly what the law and your own documents show.",
       stepLbl:"Free check · 2 minutes", triageQ:"What did you receive, and when?",
       reassure:"Two minutes. No account. We'll tell you if we can help and how urgent your deadline is.",
-      gotLbl:"What you got", optLoa:"Letter of Authority (LOA / eLA)", optNotice:"1st, 2nd, or Final Notice — BIR asking for documents", optNod:"NOD — Notice of Discrepancy (BIR says your numbers don't match)", optPan:"PAN — Preliminary Assessment Notice (the BIR's first tax bill)", optD30:"FLD/FAN, FDDA, or FD — the formal tax bill you can protest", optUnsure:"Not sure — I'll bring it to the appraisal",
-      dateLbl:"Date you received it", dateHelp:"Use the date you <b>received</b> it — not the date printed on the letter. The clock runs from receipt.", checkCta:"See my due date to file a protest →",
+      gotLbl:"What you got",
+      optLoa:"Letter of Authority (LOA / eLA)", optLoaDef:"The BIR's permission to examine your books.",
+      optNotice:"1st, 2nd, or Final Notice", optNoticeDef:"The BIR is asking you for documents.",
+      optNod:"NOD — Notice of Discrepancy", optNodDef:"The BIR says your numbers don't match theirs.",
+      optPan:"PAN — Preliminary Assessment Notice", optPanDef:"The BIR's first tax bill.",
+      optFld:"FLD / FAN", optFldDef:"The BIR's formal, official demand to pay.",
+      optFdda:"FDDA", optFddaDef:"The BIR's decision on your protest.",
+      optFd:"FD — Final Decision", optFdDef:"The Commissioner's final decision on your case.",
+      optUnsure:"Not sure", optUnsureDef:"Share the paper and we'll identify it for you.",
+      dateLbl:"Date you received it", dateHelp:"Use the date you <b>received</b> it — not the date printed on the letter. The clock runs from receipt.", checkCta:"See my deadline & next step →",
       chooseStep:"What would you like to get?", wantEs:"Executive Summary", wantSd:"Statutory Demand for Declaration of Nullity of the Letter of Authority", contCta:"Continue — share your documents →",
       apprCta:"See my options — book an Executive Summary →", apprSub:"₱5,600 (₱5,000 + 12% VAT) · credited to your case if you proceed · we reply by email.",
       apprIntro:"<b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaLigtas examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand</b> built on those findings.",
@@ -317,8 +350,16 @@
       whatLbl:"Ang ginagawa namin:", whatBody:"sinusuri namin kung <b>valid ba ang pagkakaisyu</b> ng LOA laban sa iyo. Kung hindi, ito ang madalas na pinakamabilis na paraan para mapatigil ang audit. <b>Hindi kami nangangako ng resulta</b> — sinasabi namin nang eksakto ang ipinapakita ng batas at ng sarili mong dokumento.",
       stepLbl:"Libreng check · 2 minuto", triageQ:"Ano ang natanggap mo, at kailan?",
       reassure:"Dalawang minuto. Walang account. Sasabihin namin kung matutulungan ka namin at gaano ka-urgent.",
-      gotLbl:"Ano ang natanggap", optLoa:"Letter of Authority (LOA / eLA)", optNotice:"1st, 2nd, o Final Notice — hinihingi ng BIR ang mga dokumento", optNod:"NOD — Notice of Discrepancy (sabi ng BIR hindi tugma ang numero mo)", optPan:"PAN — Preliminary Assessment Notice (unang singil ng BIR)", optD30:"FLD/FAN, FDDA, o FD — ang pormal na singil na puwede mong iprotesta", optUnsure:"Hindi sigurado — dadalhin ko sa appraisal",
-      dateLbl:"Petsa ng pagkatanggap", dateHelp:"Gamitin ang petsa ng <b>pagkatanggap</b> — hindi ang petsang nakalimbag sa sulat. Mula sa pagtanggap tumatakbo ang orasan.", checkCta:"Tingnan ang due date para mag-file ng protesta →",
+      gotLbl:"Ano ang natanggap",
+      optLoa:"Letter of Authority (LOA / eLA)", optLoaDef:"Ang pahintulot ng BIR na suriin ang iyong mga libro.",
+      optNotice:"1st, 2nd, o Final Notice", optNoticeDef:"Hinihingi ng BIR ang iyong mga dokumento.",
+      optNod:"NOD — Notice of Discrepancy", optNodDef:"Sabi ng BIR, hindi tugma ang iyong mga numero sa kanila.",
+      optPan:"PAN — Preliminary Assessment Notice", optPanDef:"Ang unang singil sa buwis ng BIR.",
+      optFld:"FLD / FAN", optFldDef:"Ang pormal at opisyal na singil ng BIR para magbayad.",
+      optFdda:"FDDA", optFddaDef:"Ang desisyon ng BIR sa iyong protesta.",
+      optFd:"FD — Final Decision", optFdDef:"Ang panghuling desisyon ng Commissioner sa iyong kaso.",
+      optUnsure:"Hindi sigurado", optUnsureDef:"Ibahagi ang papel at tutukuyin namin ito para sa iyo.",
+      dateLbl:"Petsa ng pagkatanggap", dateHelp:"Gamitin ang petsa ng <b>pagkatanggap</b> — hindi ang petsang nakalimbag sa sulat. Mula sa pagtanggap tumatakbo ang orasan.", checkCta:"Tingnan ang deadline at susunod na hakbang →",
       chooseStep:"Ano ang gusto mong makuha?", wantEs:"Executive Summary", wantSd:"Statutory Demand for Declaration of Nullity of the Letter of Authority", contCta:"Magpatuloy — ibahagi ang dokumento →",
       apprCta:"Tingnan ang options — kunin ang Executive Summary →", apprSub:"₱5,600 (₱5,000 + 12% VAT) · ibabawas sa kaso kung magpapatuloy · sasagot kami sa email.",
       apprIntro:"<b>Paano gumagana ang appraisal:</b> ibahagi ang iyong Google Drive folder na may kumpletong record — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, at ang iyong nakasulat na sagot sa bawat isa. Susuriin ng TagaLigtas ang LoA batay sa record na iyon at magbibigay ng <b>Executive Summary</b>. Kung nais mong kumilos dito, ang susunod na level ay isang <b>Statutory Demand</b> base sa mga natuklasan.",
@@ -341,8 +382,16 @@
       whatLbl:"我们做什么：", whatBody:"我们审查针对你的授权书是否<b>合法签发</b>。若不合法，这往往是最快叫停稽查的方式 — 在争论数字之前。<b>我们不承诺结果</b> — 我们如实告诉你法律和你自己的文件显示了什么。",
       stepLbl:"免费检查 · 2 分钟", triageQ:"你收到了什么，何时收到？",
       reassure:"两分钟。无需注册。我们会告诉你能否帮忙，以及你的期限有多紧迫。",
-      gotLbl:"你收到什么", optLoa:"稽查授权书（LOA / eLA）", optNotice:"第一次 / 第二次 / 最终通知 — BIR 索取文件", optNod:"NOD — 差异通知书（BIR 认为你的数字对不上）", optPan:"PAN — 初步评税通知（BIR 的首份税单）", optD30:"FLD/FAN、FDDA 或 FD — 可提出抗议的正式税单", optUnsure:"不确定 — 评估时我会带来",
-      dateLbl:"你收到的日期", dateHelp:"请用你<b>收到</b>的日期 — 不是信上打印的日期。时限自收到起算。", checkCta:"查看我提交抗辩的截止日期 →",
+      gotLbl:"你收到什么",
+      optLoa:"稽查授权书（LOA / eLA）", optLoaDef:"BIR 查阅你账簿的授权。",
+      optNotice:"第一次 / 第二次 / 最终通知", optNoticeDef:"BIR 向你索取文件。",
+      optNod:"NOD — 差异通知书", optNodDef:"BIR 认为你的数字与他们对不上。",
+      optPan:"PAN — 初步评税通知", optPanDef:"BIR 的首份税单。",
+      optFld:"FLD / FAN", optFldDef:"BIR 正式、官方的缴税要求。",
+      optFdda:"FDDA", optFddaDef:"BIR 对你抗辩的裁定。",
+      optFd:"FD — 最终决定", optFdDef:"局长对你案件的最终决定。",
+      optUnsure:"不确定", optUnsureDef:"把文件分享给我们，我们会帮你判断。",
+      dateLbl:"你收到的日期", dateHelp:"请用你<b>收到</b>的日期 — 不是信上打印的日期。时限自收到起算。", checkCta:"查看我的截止日期与下一步 →",
       chooseStep:"你想获得什么？", wantEs:"行政摘要（Executive Summary）", wantSd:"就授权书宣告无效的法定要求书（Statutory Demand）", contCta:"继续 — 分享你的文件 →",
       apprCta:"查看方案 — 获取行政摘要 →", apprSub:"₱5,600（₱5,000 + 12% 增值税）· 若继续委托可抵扣 · 我们以电邮回复。",
       apprIntro:"<b>评估流程：</b>分享你的 Google Drive 文件夹，内含完整记录 — LoA、第一/第二/最终通知、NOD、PAN、FLD/FAN、FDDA、FD，以及你对每份文件的书面答复。TagaLigtas 依据该记录审查 LoA，并出具<b>行政摘要（Executive Summary）</b>。若你想据此行动，下一步是根据这些发现拟备<b>法定要求书（Statutory Demand）</b>。",
@@ -367,7 +416,7 @@
       fileNow:"Do not ignore this. Prepare your reply path immediately.", fileNotice:"Submit the requested documents immediately.", fileUnsure:"Bring your documents in — let's confirm your exact date.", nodAction:"Attend the meeting, then file your reconsideration — don't miss either clock.",
       nodTitle:(a,b)=>`Meet the BIR by ${a}; file your Request for Reconsideration by ${b}.`,
       nodRule:"A Notice of Discrepancy (NOD) gives 5 days from receipt to meet the revenue officers, then 30 days from receipt to file a Request for Reconsideration.",
-      dueTitle:d=>`Your due date to file is ${d}.`,
+      dueTitle:d=>`Your deadline is ${d}.`,
       nwSun:"a Sunday", nwSat:"a Saturday", nwHol:"a non-working holiday",
       friendly:k=>`Note: this date falls on ${k}. File before it, not on it — it is always safer to file early than late.`,
       notice10:"A 1st, 2nd, or Final Notice gives 10 days from receipt to submit the documents.",
@@ -377,6 +426,23 @@
       unsureTitle:"Let's find your due date together.",
       unsureBody:"Bring the documents to your Executive Summary and we'll read the actual notice and confirm the exact date.",
       future:"That receipt date is in the future — please double-check it.",
+      headedLbl:"Where this is headed:", actLbl:"What to do now:",
+      reassureClose:"May paraan. The first thing a TaxSpecialist checks is whether the paper against you was even validly issued — ayusin muna natin ang papeles.",
+      headed_loa:"An LOA is the doorway to a full tax audit; quiet examinations often end in an assessment the taxpayer never saw coming — unless the LOA itself is defective.",
+      act_loa:"Reply on time and on your terms — your reply sets the venue, the schedule, and which books the examiners may see. First, have the LOA checked for facial defects; a defective LOA can stop the audit at the door.",
+      headed_notice:"Every notice you leave unanswered becomes part of the BIR's record against you and pushes the case toward a formal assessment. Silence is treated as refusal.",
+      act_notice:"Submit the requested documents before the deadline above — or formally ask for more time — and keep proof of what you sent and when.",
+      headed_nod:"A discrepancy you don't rebut becomes the basis of a tax bill (PAN). This is one of the last low-cost chances to end the issue before it becomes an assessment.",
+      act_nod:"Attend the discussion within the short period given, then follow through in writing, bringing the records that explain the difference.",
+      headed_pan:"A PAN means the BIR has already concluded you owe; what normally follows is the formal demand (FLD/FAN), and once that lands the real 30-day protest clock starts.",
+      act_pan:"Reply to the PAN before the deadline above, point by point — a strong reply now can stop the FLD/FAN from ever issuing.",
+      headed_fld:"This is a real, collectible demand. If the 30-day protest deadline passes, the assessment becomes final and executory and the BIR can enforce collection.",
+      act_fld:"File a valid written protest within 30 days — a request for reconsideration or reinvestigation stating the facts, the applicable law, and your grounds (NIRC §228 / RR 18-2013). A defective protest is treated as none at all.",
+      headed_fdda:"An FDDA is the BIR's decision on your protest — not the end. Miss the non-extendible 30 days and the assessment becomes final, executory, and demandable.",
+      act_fdda:"Within 30 days — if an authorized representative signed it, either appeal to the CTA or ask the Commissioner to reconsider (not both); if the Commissioner signed it, go straight to the CTA.",
+      headed_fd:"A Final Decision from the Commissioner is the BIR's last administrative word — but a fast-closing court remedy remains.",
+      act_fd:"Appeal to the Court of Tax Appeals within 30 days of receipt; let it lapse and the assessment becomes final and collectible through distraint, levy, or garnishment.",
+      act_unsure:"Bring the paper to the appraisal and a TaxSpecialist will identify it and confirm your exact deadline.",
       disc:"This is an urgency estimate — we will confirm the exact deadline against your uploaded document. It is computed from the receipt date you entered; personally check its accuracy for your safety and peace of mind."
     },
     tl:{
@@ -384,7 +450,7 @@
       fileNow:"Huwag itong balewalain. Ihanda kaagad ang iyong paraan ng pagsagot.", fileNotice:"Isumite kaagad ang hinihinging mga dokumento.", fileUnsure:"Dalhin ang dokumento — kumpirmahin natin ang eksaktong petsa.", nodAction:"Dumalo sa pulong, tapos i-file ang reconsideration — huwag palampasin ang alinman.",
       nodTitle:(a,b)=>`Makipagkita sa BIR bago ang ${a}; i-file ang Request for Reconsideration bago ang ${b}.`,
       nodRule:"Ang Notice of Discrepancy (NOD) ay nagbibigay ng 5 araw mula pagtanggap para makipagkita sa mga revenue officer, tapos 30 araw mula pagtanggap para mag-file ng Request for Reconsideration.",
-      dueTitle:d=>`Ang due date mo para mag-file ay ${d}.`,
+      dueTitle:d=>`Ang iyong deadline ay ${d}.`,
       nwSun:"isang Linggo", nwSat:"isang Sabado", nwHol:"isang non-working holiday",
       friendly:k=>`Paalala: ang petsang ito ay ${k}. Mag-file bago ito, hindi sa mismong araw — mas ligtas nang maaga kaysa huli.`,
       notice10:"Ang 1st, 2nd, o Final Notice ay 10 araw mula pagtanggap para isumite ang mga dokumento.",
@@ -394,6 +460,23 @@
       unsureTitle:"Hanapin natin ang due date mo nang sabay.",
       unsureBody:"Dalhin ang mga dokumento sa Executive Summary at babasahin namin ang mismong notice para sa eksaktong petsa.",
       future:"Nasa hinaharap ang petsa ng pagkatanggap — pakisuri muli.",
+      headedLbl:"Saan ito papunta:", actLbl:"Ano ang gagawin ngayon:",
+      reassureClose:"May paraan. Ang unang tinitingnan ng TaxSpecialist ay kung valid ba talagang naisyu ang papel laban sa iyo — ayusin muna natin ang papeles.",
+      headed_loa:"Ang LOA ang pintuan patungong buong tax audit; ang tahimik na pagsusuri ay madalas nauuwi sa assessment na hindi inaasahan ng taxpayer — maliban kung depektibo mismo ang LOA.",
+      act_loa:"Sumagot sa tamang oras at sa iyong mga tuntunin — ang iyong sagot ang nagtatakda ng venue, ng iskedyul, at kung anong mga libro ang makikita ng examiners. Una, ipasuri ang LOA para sa facial defects; ang depektibong LOA ay maaaring magpatigil sa audit sa pintuan pa lang.",
+      headed_notice:"Bawat notice na hindi mo sinasagot ay nagiging bahagi ng record ng BIR laban sa iyo at itinutulak ang kaso tungong pormal na assessment. Ang katahimikan ay itinuturing na pagtanggi.",
+      act_notice:"Isumite ang hinihinging mga dokumento bago ang deadline sa itaas — o pormal na humingi ng dagdag na panahon — at magtago ng patunay kung ano ang ipinadala mo at kailan.",
+      headed_nod:"Ang discrepancy na hindi mo sinagot ay nagiging basehan ng singil sa buwis (PAN). Isa ito sa mga huling murang pagkakataon para tapusin ang isyu bago ito maging assessment.",
+      act_nod:"Dumalo sa pulong sa loob ng maikling panahon na ibinigay, tapos sundan ito nang nakasulat, dala ang mga record na nagpapaliwanag ng pagkakaiba.",
+      headed_pan:"Ang PAN ay nangangahulugang napagpasyahan na ng BIR na may utang ka; ang karaniwang sumusunod ay ang pormal na demand (FLD/FAN), at kapag dumating iyon, saka magsisimula ang tunay na 30-araw na protest clock.",
+      act_pan:"Sagutin ang PAN bago ang deadline sa itaas, puntos por puntos — ang matibay na sagot ngayon ay maaaring pumigil na maisyu pa ang FLD/FAN.",
+      headed_fld:"Isa itong tunay at kolektible na demand. Kapag lumampas ang 30-araw na protest deadline, ang assessment ay magiging final at executory at maaaring ipatupad ng BIR ang koleksyon.",
+      act_fld:"Mag-file ng valid na nakasulat na protesta sa loob ng 30 araw — isang request for reconsideration o reinvestigation na naglalahad ng mga facts, ng naaangkop na batas, at ng iyong mga grounds (NIRC §228 / RR 18-2013). Ang depektibong protesta ay itinuturing na walang protesta.",
+      headed_fdda:"Ang FDDA ay ang desisyon ng BIR sa iyong protesta — hindi pa ito ang dulo. Kapag lumampas ang non-extendible na 30 araw, ang assessment ay magiging final, executory, at demandable.",
+      act_fdda:"Sa loob ng 30 araw — kung authorized representative ang pumirma, umapela sa CTA o hilingin sa Commissioner na muling isaalang-alang (hindi pareho); kung ang Commissioner ang pumirma, diretso na sa CTA.",
+      headed_fd:"Ang Final Decision mula sa Commissioner ay ang huling administratibong salita ng BIR — pero may mabilis na nagsasarang court remedy pa rin.",
+      act_fd:"Umapela sa Court of Tax Appeals sa loob ng 30 araw mula pagtanggap; kapag hinayaang lumipas, ang assessment ay magiging final at kolektible sa pamamagitan ng distraint, levy, o garnishment.",
+      act_unsure:"Dalhin ang papel sa appraisal at tutukuyin ito ng TaxSpecialist at kukumpirmahin ang eksaktong deadline mo.",
       disc:"Isang pagtantya lang ito para sa pagkaapura — kukumpirmahin namin ang eksaktong deadline batay sa iyong na-upload na dokumento. Batay ito sa petsa ng pagkatanggap na inilagay mo; personal na tiyakin ang tama nito para sa iyong kaligtasan at kapanatagan."
     },
     zh:{
@@ -401,7 +484,7 @@
       fileNow:"切勿忽视。请立即准备你的答复路径。", fileNotice:"请立即提交所要求的文件。", fileUnsure:"带上你的文件 — 我们一起确认确切日期。", nodAction:"出席会面，并提交复议 — 两个期限都不能错过。",
       nodTitle:(a,b)=>`请在 ${a} 前与 BIR 会面；在 ${b} 前提交复议申请。`,
       nodRule:"差异通知书（NOD）自收到起给 5 天与税务官会面，再自收到起 30 天提交复议申请（Request for Reconsideration）。",
-      dueTitle:d=>`你的提交截止日期是 ${d}。`,
+      dueTitle:d=>`你的截止日期是 ${d}。`,
       nwSun:"星期日", nwSat:"星期六", nwHol:"非工作假期",
       friendly:k=>`提示：该日期为${k}。请在此日期之前提交，不要拖到当天 — 早交总比晚交安全。`,
       notice10:"第一次、第二次或最终通知自收到起 10 天内提交文件。",
@@ -411,6 +494,23 @@
       unsureTitle:"我们一起找出你的截止日期。",
       unsureBody:"把文件带到行政摘要，我们会审阅原始通知并确认确切日期。",
       future:"该收到日期在未来 — 请再核对。",
+      headedLbl:"接下来会怎样：", actLbl:"现在该怎么做：",
+      reassureClose:"有办法。TaxSpecialist 首先会查的，是针对你的这份文件当初是否合法签发 — 我们先把文件理清楚。",
+      headed_loa:"LOA 是通往全面税务稽查的大门；不声张的检查，往往以纳税人始料未及的评税收场 — 除非 LOA 本身有瑕疵。",
+      act_loa:"按时并按你的条件答复 — 你的答复将设定稽查地点、时间表，以及稽查人员可查阅哪些账簿。首先，请让人检查 LOA 是否存在表面瑕疵；有瑕疵的 LOA 可以在门口就叫停稽查。",
+      headed_notice:"你每一份未回应的通知，都会成为 BIR 对你不利记录的一部分，并把案件推向正式评税。沉默会被当作拒绝。",
+      act_notice:"在上方截止日期前提交所要求的文件 — 或正式申请延期 — 并保留你提交内容与时间的凭证。",
+      headed_nod:"你若不反驳差异，它就会成为税单（PAN）的依据。这是在它变成评税之前，为数不多的低成本了结机会之一。",
+      act_nod:"在给定的短期限内出席讨论，随后以书面跟进，并带上能解释差异的记录。",
+      headed_pan:"PAN 意味着 BIR 已认定你欠税；通常随后而来的是正式催缴（FLD/FAN），而一旦它送达，真正的 30 天抗辩时限才开始。",
+      act_pan:"在上方截止日期前逐点答复 PAN — 现在有力的答复，或能阻止 FLD/FAN 的签发。",
+      headed_fld:"这是一份真实且可强制征收的催缴。若 30 天抗辩期限过去，评税将成为终局且可执行，BIR 即可强制征收。",
+      act_fld:"在 30 天内提交有效的书面抗辩 — 一份陈明事实、适用法律及你的理由的复议或重查申请（NIRC §228 / RR 18-2013）。有瑕疵的抗辩会被视为未提抗辩。",
+      headed_fdda:"FDDA 是 BIR 对你抗辩的决定 — 但还不是终点。错过不可延长的 30 天，评税将成为终局、可执行且可索偿。",
+      act_fdda:"在 30 天内 — 若由授权代表签署，可向 CTA 上诉，或请局长复议（二者不可兼得）；若由局长签署，直接前往 CTA。",
+      headed_fd:"局长的最终决定是 BIR 最后的行政裁定 — 但仍有一个即将关闭的司法救济。",
+      act_fd:"自收到起 30 天内向税务上诉法院上诉；任其失效，评税将成为终局并可通过扣押、征收或第三方扣缴强制征收。",
+      act_unsure:"把文件带到评估，TaxSpecialist 会帮你判断并确认你的确切截止日期。",
       disc:"这只是紧迫程度的估算 — 我们会依据你上传的文件确认确切的截止日期。此日期依你输入的收到日期计算；请亲自核对其准确性，为了你的安全与安心。"
     }
   };
@@ -454,7 +554,9 @@
     const d0 = new Date(dateVal+"T00:00:00");
     const future = d0 > today;
     const nwOf = due => due.getDay()===0 ? R.nwSun : (due.getDay()===6 ? R.nwSat : (PH_NONWORKING.has(iso(due)) ? R.nwHol : ""));
-    const period = doc==="pan" ? 15 : (doc==="d30" ? 30 : ((doc==="notice"||doc==="loa") ? 10 : 0));
+    const period = doc==="pan" ? 15
+      : ((doc==="fld"||doc==="fdda"||doc==="fd") ? 30
+      : ((doc==="notice"||doc==="loa") ? 10 : 0));
 
     let title="", body="", cls="result show";
     if(period){
@@ -482,6 +584,10 @@
       title = R.unsureTitle;
       body = R.unsureBody;
     }
+    const headed = R["headed_"+doc], act = R["act_"+doc];
+    if(headed){ body += `<br><br><b>${R.headedLbl}</b> ${headed}`; }
+    if(act){ body += `<br><br><b>${R.actLbl}</b> ${act}`; }
+    if(doc!=="unsure" && R.reassureClose){ body += `<br><br>${R.reassureClose}`; }
     box.className = cls;
     box.innerHTML = `<div class="rlabel">${R.rlabel}</div>`
       + `<div class="big">${title}</div>`
@@ -499,6 +605,10 @@
   // once the result is shown, changing an input updates it live (button is gone)
   document.querySelectorAll('input[name="doc"]').forEach(r=>r.addEventListener("change", ()=>{
     if(document.getElementById("result").classList.contains("show")) computeResult();
+  }));
+  // Selection fallback for browsers without :has() — toggle .sel on the chosen option's label
+  document.querySelectorAll('input[name="doc"],input[name="want"]').forEach(r=>r.addEventListener("change", ()=>{
+    document.querySelectorAll('label.opt').forEach(l=>l.classList.toggle('sel', !!l.querySelector('input:checked')));
   }));
 
   document.getElementById("triageForm").addEventListener("submit", e=>{
