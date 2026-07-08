@@ -62,12 +62,12 @@
     border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--slate)}
   .badge.accred{border-color:#cfe0c2;background:var(--green-soft);color:var(--green-ink)}
   .h-langs{font-size:12px;color:var(--muted);font-weight:600;margin-top:8px;letter-spacing:.02em}
-  .practitioner{display:flex;gap:13px;align-items:center;margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
-  .pract-photo{flex:0 0 72px;width:72px;height:92px;border-radius:14px;object-fit:cover;object-position:50% 10%;background:var(--green-soft);border:2px solid #cfe0c2}
+  .practitioner{display:flex;gap:13px;align-items:stretch;margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+  .pract-photo{flex:0 0 72px;width:72px;align-self:stretch;border-radius:14px;object-fit:cover;object-position:50% 12%;background:var(--green-soft);border:2px solid #cfe0c2}
   .pract-name{font-size:16px;font-weight:800;color:var(--navy);line-height:1.2}
   .pract-title{font-size:12.5px;font-weight:800;color:var(--green-strong);margin-top:1px;line-height:1.3}
   .pract-cred{font-size:11.5px;color:var(--green-strong);font-weight:700;margin-top:2px;line-height:1.35}
-  .pract-org{font-size:11.5px;color:var(--green-strong);font-weight:700;margin-top:1px;line-height:1.35}
+  .pract-org{font-size:10px;letter-spacing:-.01em;color:var(--green-strong);font-weight:700;margin-top:1px;line-height:1.35;white-space:nowrap}
   .pract-line{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
   .process{margin:16px 20px 0;display:flex;flex-direction:column;gap:9px}
   .pstep{display:flex;align-items:center;gap:11px;font-size:13px;color:var(--slate);font-weight:600}
@@ -202,9 +202,10 @@
 
     <div class="process">
       <div class="pstep"><span class="pnum">1</span><span data-i="pstep1">You share your document folder</span></div>
-      <div class="pstep"><span class="pnum">2</span><span data-i="pstep2">An accredited practitioner reviews it</span></div>
-      <div class="pstep"><span class="pnum">3</span><span data-i="pstep3">You get a written Executive Summary</span></div>
+      <div class="pstep"><span class="pnum">2</span><span data-i="pstep2">A TaxSpecialist reviews it</span></div>
+      <div class="pstep"><span class="pnum">3</span><span data-i="pstep3">You get the number of facial defects found — and your recommended next step</span></div>
     </div>
+    <p class="pstep-note" data-i="pstepNote" style="margin:11px 20px 0;font-size:12.5px;color:var(--green-strong);font-weight:600;font-style:italic;line-height:1.5">Want to see each defect, the law behind it, and the exact filing move? That's the Executive Summary.</p>
 
     <!-- TRIAGE -->
     <section class="triage" id="triage" aria-labelledby="triageQ">
@@ -228,10 +229,10 @@
             <span class="optbody"><span class="opt-term" data-i="optPan">PAN — Preliminary Assessment Notice</span>
               <span class="opt-def" data-i="optPanDef">The BIR's first tax bill. Once it arrives, they believe you owe — and the time to fight back is short.</span></span></label>
           <label class="opt"><input type="radio" name="doc" value="fld"><span class="dot"></span>
-            <span class="optbody"><span class="opt-term" data-i="optFld">FLD / FAN</span>
+            <span class="optbody"><span class="opt-term" data-i="optFld">FLD / FAN — Formal Letter of Demand</span>
               <span class="opt-def" data-i="optFldDef">Formal Letter of Demand / Final Assessment Notice — the official demand to pay. Miss the protest deadline and it becomes final and collectible.</span></span></label>
           <label class="opt"><input type="radio" name="doc" value="fdda"><span class="dot"></span>
-            <span class="optbody"><span class="opt-term" data-i="optFdda">FDDA</span>
+            <span class="optbody"><span class="opt-term" data-i="optFdda">FDDA — Final Decision on Disputed Assessment</span>
               <span class="opt-def" data-i="optFddaDef">Final Decision on Disputed Assessment — the BIR's ruling on your protest. Within a non-extendible 30 days: appeal to the CTA, or (if an authorized representative signed it) ask the Commissioner to reconsider — not both.</span></span></label>
           <!-- FD = Commissioner's Final Decision (confirmed by founder — not Final Demand). -->
           <label class="opt"><input type="radio" name="doc" value="fd"><span class="dot"></span>
@@ -257,11 +258,16 @@
       </form>
 
       <div id="convert" class="hidden" style="padding:14px 0 0">
-        <p class="appr-intro" data-i="apprIntro"><b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaLigtas examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand</b> built on those findings.</p>
+        <p class="appr-intro" data-i="apprIntro"><b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaLigtas examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand or Request</b> built on those findings.</p>
         <div class="step" data-i="chooseStep">What would you like to get?</div>
-        <fieldset style="margin-top:8px">
-          <label class="opt"><input type="radio" name="want" value="es"><span class="dot"></span><span data-i="wantEs">Executive Summary</span></label>
-          <label class="opt"><input type="radio" name="want" value="sd"><span class="dot"></span><span data-i="wantSd">Statutory Demand for Declaration of Nullity of the Letter of Authority</span></label>
+        <p class="choose-intro" data-i="chooseIntro" style="font-size:12.5px;color:var(--slate);margin:6px 0 10px;line-height:1.5">The Summary finds the way out. The Demand or Request is the letter that takes it — built for your exact notice.</p>
+        <fieldset style="margin-top:2px">
+          <label class="opt"><input type="radio" name="want" value="es"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="wantEs">Executive Summary</span>
+              <span class="opt-def" data-i="wantEsDef">Know exactly where you stand: each facial defect we find, the law behind it, and the precise move it opens.</span></span></label>
+          <label class="opt"><input type="radio" name="want" value="sd"><span class="dot"></span>
+            <span class="optbody"><span class="opt-term" data-i="wantSd">Statutory Demand or Request</span>
+              <span class="opt-def" data-i="wantSdDef">Turn findings into action: the reply we draft and file for your exact BIR notice, pressing every defect the Summary uncovered.</span></span></label>
         </fieldset>
         <div id="wantMsg" class="result out hidden" role="status" aria-live="polite"></div>
         <div class="ctawrap hidden" id="contWrap" style="padding:12px 0 0">
@@ -312,7 +318,7 @@
       heroH1:"Got a BIR letter?<br>Don't panic — know your options first.", noareglo:"No <em>backroom deals</em>. We use the law.",
       practCred:"CPA License No. 78493", practOrg:"Founder, ETM-Tax Agent Office [ETM-TAO], Inc.", practLine:"42 years saving lives, livelihoods, and taxes — a real practitioner reads your case, not a bot.",
       secureBox:"🔒 We open your folder <b>read-only</b> — only the folder you send. Nothing is downloaded or kept. Under the Data Privacy Act (RA 10173), your data is used only for your case.",
-      pstep1:"You share your document folder", pstep2:"An accredited practitioner reviews it", pstep3:"You get a written Executive Summary",
+      pstep1:"You share your document folder", pstep2:"A TaxSpecialist reviews it", pstep3:"You get the number of facial defects found — and your recommended next step", pstepNote:"Want to see each defect, the law behind it, and the exact filing move? That's the Executive Summary.",
       payoffT:"Free: we'll tell you your deadline.", payoffS:"Missing it can be fatal to your defense.",
       startCta:"Start free — 2-minute check →", startSub:"No signup. Tell us what you got and when.",
       whatLbl:"What we do:", whatBody:"we check whether the LOA against you was <b>validly issued</b>. If it wasn't, that's often the fastest way to stop an audit — before arguing the numbers. <b>We don't promise a result</b> — we tell you exactly what the law and your own documents show.",
@@ -323,14 +329,14 @@
       optNotice:"1st, 2nd, or Final Notice", optNoticeDef:"The BIR is asking you for documents.",
       optNod:"NOD — Notice of Discrepancy", optNodDef:"The BIR says your numbers don't match theirs.",
       optPan:"PAN — Preliminary Assessment Notice", optPanDef:"The BIR's first tax bill.",
-      optFld:"FLD / FAN", optFldDef:"The BIR's formal, official demand to pay.",
-      optFdda:"FDDA", optFddaDef:"The BIR's decision on your protest.",
+      optFld:"FLD / FAN — Formal Letter of Demand", optFldDef:"The BIR's formal, official demand to pay.",
+      optFdda:"FDDA — Final Decision on Disputed Assessment", optFddaDef:"The BIR's decision on your protest.",
       optFd:"FD — Final Decision", optFdDef:"The Commissioner's final decision on your case.",
       optUnsure:"Not sure", optUnsureDef:"Share the paper and we'll identify it for you.",
       dateLbl:"Date you received it", dateHelp:"Use the date you <b>received</b> it — not the date printed on the letter. The clock runs from receipt.", checkCta:"See my deadline & next step →",
-      chooseStep:"What would you like to get?", wantEs:"Executive Summary", wantSd:"Statutory Demand for Declaration of Nullity of the Letter of Authority", contCta:"Continue — share your documents →",
+      chooseStep:"What would you like to get?", wantEs:"Executive Summary", wantSd:"Statutory Demand or Request", wantEsDef:"Know exactly where you stand: each facial defect we find, the law behind it, and the precise move it opens.", wantSdDef:"Turn findings into action: the reply we draft and file for your exact BIR notice, pressing every defect the Summary uncovered.", chooseIntro:"The Summary finds the way out. The Demand or Request is the letter that takes it — built for your exact notice.", contCta:"Continue — share your documents →",
       apprCta:"See my options — book an Executive Summary →", apprSub:"₱5,600 (₱5,000 + 12% VAT) · credited to your case if you proceed · we reply by email.",
-      apprIntro:"<b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaLigtas examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand</b> built on those findings.",
+      apprIntro:"<b>How the appraisal works:</b> share your Google Drive folder with the full trail — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, and your written reply to each. TagaLigtas examines the LoA against that record and returns an <b>Executive Summary</b>. If you want to act on it, the next level is a <b>Statutory Demand or Request</b> built on those findings.",
       privLbl:"Protected under the Data Privacy Act (RA 10173)", privBody:"— used only for your case.",
       footBy:"by", feedbackCta:"💬 Share your feedback", footNote:"This page is public education, not tax or legal advice. This page itself does not read your documents. We access your folder only after you send the link, and only for this case.",
       shareStep:"Step 2 · Share your documents", shareTitle:"Share your Google Drive folder",
@@ -344,7 +350,7 @@
       heroH1:"May sulat mula sa BIR?<br>Huwag mataranta — alamin muna ang mga opsyon mo.", noareglo:"Walang <em>areglo</em>. Ginagamit namin ang batas.",
       practCred:"CPA Lisensya Blg. 78493", practOrg:"Tagapagtatag, ETM-Tax Agent Office [ETM-TAO], Inc.", practLine:"42 taóng karanasan sa pagliligtas ng buhay, kabuhayan, at buwis — tunay na practitioner ang bumabasa ng iyong kaso, hindi bot.",
       secureBox:"🔒 Binubuksan namin ang folder mo <b>read-only</b> — tanging ang folder na ipinadala mo. Walang dina-download o itinatago. Sa ilalim ng Data Privacy Act (RA 10173), ang data mo ay para lang sa kaso mo.",
-      pstep1:"Ibinabahagi mo ang iyong folder ng dokumento", pstep2:"Sinusuri ito ng akreditadong practitioner", pstep3:"Makakakuha ka ng nakasulat na Executive Summary",
+      pstep1:"Ibinabahagi mo ang iyong folder ng dokumento", pstep2:"Sinusuri ito ng TaxSpecialist", pstep3:"Makukuha mo ang bilang ng facial defects na natagpuan — at ang inirerekomendang susunod na hakbang", pstepNote:"Gusto mong makita ang bawat depekto, ang batas sa likod nito, at ang eksaktong hakbang sa pag-file? Iyan ang Executive Summary.",
       payoffT:"Libre: sasabihin namin ang deadline mo.", payoffS:"Delikado sa depensa mo kapag nalampasan.",
       startCta:"Libreng simula — 2 minutong check →", startSub:"Walang account. Sabihin lang kung ano at kailan.",
       whatLbl:"Ang ginagawa namin:", whatBody:"sinusuri namin kung <b>valid ba ang pagkakaisyu</b> ng LOA laban sa iyo. Kung hindi, ito ang madalas na pinakamabilis na paraan para mapatigil ang audit. <b>Hindi kami nangangako ng resulta</b> — sinasabi namin nang eksakto ang ipinapakita ng batas at ng sarili mong dokumento.",
@@ -355,14 +361,14 @@
       optNotice:"1st, 2nd, o Final Notice", optNoticeDef:"Hinihingi ng BIR ang iyong mga dokumento.",
       optNod:"NOD — Notice of Discrepancy", optNodDef:"Sabi ng BIR, hindi tugma ang iyong mga numero sa kanila.",
       optPan:"PAN — Preliminary Assessment Notice", optPanDef:"Ang unang singil sa buwis ng BIR.",
-      optFld:"FLD / FAN", optFldDef:"Ang pormal at opisyal na singil ng BIR para magbayad.",
-      optFdda:"FDDA", optFddaDef:"Ang desisyon ng BIR sa iyong protesta.",
+      optFld:"FLD / FAN — Formal Letter of Demand", optFldDef:"Ang pormal at opisyal na singil ng BIR para magbayad.",
+      optFdda:"FDDA — Final Decision on Disputed Assessment", optFddaDef:"Ang desisyon ng BIR sa iyong protesta.",
       optFd:"FD — Final Decision", optFdDef:"Ang panghuling desisyon ng Commissioner sa iyong kaso.",
       optUnsure:"Hindi sigurado", optUnsureDef:"Ibahagi ang papel at tutukuyin namin ito para sa iyo.",
       dateLbl:"Petsa ng pagkatanggap", dateHelp:"Gamitin ang petsa ng <b>pagkatanggap</b> — hindi ang petsang nakalimbag sa sulat. Mula sa pagtanggap tumatakbo ang orasan.", checkCta:"Tingnan ang deadline at susunod na hakbang →",
-      chooseStep:"Ano ang gusto mong makuha?", wantEs:"Executive Summary", wantSd:"Statutory Demand for Declaration of Nullity of the Letter of Authority", contCta:"Magpatuloy — ibahagi ang dokumento →",
+      chooseStep:"Ano ang gusto mong makuha?", wantEs:"Executive Summary", wantSd:"Statutory Demand or Request", wantEsDef:"Alamin nang eksakto kung nasaan ka: bawat facial defect na matatagpuan namin, ang batas sa likod nito, at ang eksaktong hakbang na binubuksan nito.", wantSdDef:"Gawing aksyon ang mga natuklasan: ang sagot na dini-draft at ini-file namin para sa iyong eksaktong BIR notice, idiniin ang bawat depektong natuklasan ng Summary.", chooseIntro:"Ang Summary ang humahanap ng paraan; ang Demand o Request ang liham na kukuha nito — ginawa para sa iyong eksaktong notice.", contCta:"Magpatuloy — ibahagi ang dokumento →",
       apprCta:"Tingnan ang options — kunin ang Executive Summary →", apprSub:"₱5,600 (₱5,000 + 12% VAT) · ibabawas sa kaso kung magpapatuloy · sasagot kami sa email.",
-      apprIntro:"<b>Paano gumagana ang appraisal:</b> ibahagi ang iyong Google Drive folder na may kumpletong record — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, at ang iyong nakasulat na sagot sa bawat isa. Susuriin ng TagaLigtas ang LoA batay sa record na iyon at magbibigay ng <b>Executive Summary</b>. Kung nais mong kumilos dito, ang susunod na level ay isang <b>Statutory Demand</b> base sa mga natuklasan.",
+      apprIntro:"<b>Paano gumagana ang appraisal:</b> ibahagi ang iyong Google Drive folder na may kumpletong record — LoA, 1st / 2nd / Final Notice, NOD, PAN, FLD/FAN, FDDA, FD, at ang iyong nakasulat na sagot sa bawat isa. Susuriin ng TagaLigtas ang LoA batay sa record na iyon at magbibigay ng <b>Executive Summary</b>. Kung nais mong kumilos dito, ang susunod na level ay isang <b>Statutory Demand or Request</b> base sa mga natuklasan.",
       privLbl:"Protektado sa ilalim ng Data Privacy Act (RA 10173)", privBody:"— para lang sa kaso mo.",
       footBy:"ng", feedbackCta:"💬 Ibahagi ang iyong feedback", footNote:"Ang pahinang ito ay public education, hindi tax o legal advice. Ang pahinang ito mismo ay hindi bumabasa ng iyong dokumento. Ina-access lang namin ang iyong folder pagkatapos mong ipadala ang link, at para lang sa kasong ito.",
       shareStep:"Hakbang 2 · Ibahagi ang dokumento", shareTitle:"Ibahagi ang iyong Google Drive folder",
@@ -376,7 +382,7 @@
       heroH1:"收到 BIR 税务信？<br>别慌，先弄清楚你的选择。", noareglo:"不搞私下交易 — 我们依法办事。",
       practCred:"注册会计师（CPA）执照号 78493", practOrg:"创办人，ETM-Tax Agent Office [ETM-TAO], Inc.", practLine:"42 年拯救生命、生计与税务，由真人专业人士审阅你的案件— 不是机器人。",
       secureBox:"🔒 我们以<b>只读</b>方式打开你的文件夹 — 仅限你发送的文件夹。不下载、不留存。依据《数据隐私法》(RA 10173)，你的数据仅用于你的案件。",
-      pstep1:"你分享你的文件夹", pstep2:"由持牌专业人士审阅", pstep3:"你获得书面行政摘要",
+      pstep1:"你分享你的文件夹", pstep2:"由 TaxSpecialist 审阅", pstep3:"你获得所发现的表面瑕疵（facial defects）数量 — 以及建议的下一步", pstepNote:"想看到每一项瑕疵、其背后的法律，以及确切的申报步骤？那就是 Executive Summary。",
       payoffT:"免费：我们会告诉你截止日期。", payoffS:"错过可能对你的抗辩致命。",
       startCta:"免费开始 — 两分钟检查 →", startSub:"无需注册。告诉我们你收到什么、何时收到。",
       whatLbl:"我们做什么：", whatBody:"我们审查针对你的授权书是否<b>合法签发</b>。若不合法，这往往是最快叫停稽查的方式 — 在争论数字之前。<b>我们不承诺结果</b> — 我们如实告诉你法律和你自己的文件显示了什么。",
@@ -387,14 +393,14 @@
       optNotice:"第一次 / 第二次 / 最终通知", optNoticeDef:"BIR 向你索取文件。",
       optNod:"NOD — 差异通知书", optNodDef:"BIR 认为你的数字与他们对不上。",
       optPan:"PAN — 初步评税通知", optPanDef:"BIR 的首份税单。",
-      optFld:"FLD / FAN", optFldDef:"BIR 正式、官方的缴税要求。",
-      optFdda:"FDDA", optFddaDef:"BIR 对你抗辩的裁定。",
+      optFld:"FLD / FAN — 正式催缴函", optFldDef:"BIR 正式、官方的缴税要求。",
+      optFdda:"FDDA — 对争议评税的最终决定", optFddaDef:"BIR 对你抗辩的裁定。",
       optFd:"FD — 最终决定", optFdDef:"局长对你案件的最终决定。",
       optUnsure:"不确定", optUnsureDef:"把文件分享给我们，我们会帮你判断。",
       dateLbl:"你收到的日期", dateHelp:"请用你<b>收到</b>的日期 — 不是信上打印的日期。时限自收到起算。", checkCta:"查看我的截止日期与下一步 →",
-      chooseStep:"你想获得什么？", wantEs:"行政摘要（Executive Summary）", wantSd:"就授权书宣告无效的法定要求书（Statutory Demand）", contCta:"继续 — 分享你的文件 →",
+      chooseStep:"你想获得什么？", wantEs:"行政摘要（Executive Summary）", wantSd:"法定要求或请求书（Statutory Demand or Request）", wantEsDef:"清楚知道你的处境：我们发现的每一项表面瑕疵、其背后的法律，以及它开启的确切行动。", wantSdDef:"把发现化为行动：我们为你的确切 BIR 通知起草并提交的答复，逐一施压 Summary 揭示的每一项瑕疵。", chooseIntro:"Summary 找到出路；Demand 或 Request 就是拿下它的那封信 — 为你的确切通知量身打造。", contCta:"继续 — 分享你的文件 →",
       apprCta:"查看方案 — 获取行政摘要 →", apprSub:"₱5,600（₱5,000 + 12% 增值税）· 若继续委托可抵扣 · 我们以电邮回复。",
-      apprIntro:"<b>评估流程：</b>分享你的 Google Drive 文件夹，内含完整记录 — LoA、第一/第二/最终通知、NOD、PAN、FLD/FAN、FDDA、FD，以及你对每份文件的书面答复。TagaLigtas 依据该记录审查 LoA，并出具<b>行政摘要（Executive Summary）</b>。若你想据此行动，下一步是根据这些发现拟备<b>法定要求书（Statutory Demand）</b>。",
+      apprIntro:"<b>评估流程：</b>分享你的 Google Drive 文件夹，内含完整记录 — LoA、第一/第二/最终通知、NOD、PAN、FLD/FAN、FDDA、FD，以及你对每份文件的书面答复。TagaLigtas 依据该记录审查 LoA，并出具<b>行政摘要（Executive Summary）</b>。若你想据此行动，下一步是根据这些发现拟备<b>法定要求或请求书（Statutory Demand or Request）</b>。",
       privLbl:"受《数据隐私法》(RA 10173) 保护", privBody:"— 仅用于你的案件。",
       footBy:"由", feedbackCta:"💬 分享你的反馈", footNote:"本页为公共教育，非税务或法律意见。本页本身不读取你的文件。我们仅在你发送链接后才访问你的文件夹，且仅用于此案件。",
       shareStep:"第 2 步 · 分享你的文件", shareTitle:"分享你的 Google Drive 文件夹",
@@ -413,7 +419,7 @@
   const RESULTS = {
     en:{
       rlabel:"Due Date",
-      fileNow:"Do not ignore this. Prepare your reply path immediately.", fileNotice:"Submit the requested documents immediately.", fileUnsure:"Bring your documents in — let's confirm your exact date.", nodAction:"Attend the meeting, then file your reconsideration — don't miss either clock.",
+      fileNow:"Do not ignore this.<br>The clock is already running. Prepare your reply — now, not later.", fileNotice:"Submit the requested documents immediately.", fileUnsure:"Bring your documents in — let's confirm your exact date.", nodAction:"Attend the meeting, then file your reconsideration — don't miss either clock.",
       nodTitle:(a,b)=>`Meet the BIR by ${a}; file your Request for Reconsideration by ${b}.`,
       nodRule:"A Notice of Discrepancy (NOD) gives 5 days from receipt to meet the revenue officers, then 30 days from receipt to file a Request for Reconsideration.",
       dueTitle:d=>`Your deadline is ${d}.`,
@@ -447,7 +453,7 @@
     },
     tl:{
       rlabel:"Takdang Petsa",
-      fileNow:"Huwag itong balewalain. Ihanda kaagad ang iyong paraan ng pagsagot.", fileNotice:"Isumite kaagad ang hinihinging mga dokumento.", fileUnsure:"Dalhin ang dokumento — kumpirmahin natin ang eksaktong petsa.", nodAction:"Dumalo sa pulong, tapos i-file ang reconsideration — huwag palampasin ang alinman.",
+      fileNow:"Huwag itong balewalain.<br>Tumatakbo na ang orasan. Ihanda ang iyong sagot — ngayon, hindi mamaya.", fileNotice:"Isumite kaagad ang hinihinging mga dokumento.", fileUnsure:"Dalhin ang dokumento — kumpirmahin natin ang eksaktong petsa.", nodAction:"Dumalo sa pulong, tapos i-file ang reconsideration — huwag palampasin ang alinman.",
       nodTitle:(a,b)=>`Makipagkita sa BIR bago ang ${a}; i-file ang Request for Reconsideration bago ang ${b}.`,
       nodRule:"Ang Notice of Discrepancy (NOD) ay nagbibigay ng 5 araw mula pagtanggap para makipagkita sa mga revenue officer, tapos 30 araw mula pagtanggap para mag-file ng Request for Reconsideration.",
       dueTitle:d=>`Ang iyong deadline ay ${d}.`,
@@ -481,7 +487,7 @@
     },
     zh:{
       rlabel:"截止日期",
-      fileNow:"切勿忽视。请立即准备你的答复路径。", fileNotice:"请立即提交所要求的文件。", fileUnsure:"带上你的文件 — 我们一起确认确切日期。", nodAction:"出席会面，并提交复议 — 两个期限都不能错过。",
+      fileNow:"切勿忽视。<br>时限已经在走。现在就准备你的答复 — 不要拖延。", fileNotice:"请立即提交所要求的文件。", fileUnsure:"带上你的文件 — 我们一起确认确切日期。", nodAction:"出席会面，并提交复议 — 两个期限都不能错过。",
       nodTitle:(a,b)=>`请在 ${a} 前与 BIR 会面；在 ${b} 前提交复议申请。`,
       nodRule:"差异通知书（NOD）自收到起给 5 天与税务官会面，再自收到起 30 天提交复议申请（Request for Reconsideration）。",
       dueTitle:d=>`你的截止日期是 ${d}。`,
@@ -596,7 +602,7 @@
     // the "See my due date" button gives way to an action line
     const fn = document.getElementById("fileNow");
     fn.className = "filenow" + (doc==="unsure" ? " calm" : "");
-    fn.textContent = period ? (doc==="notice" ? R.fileNotice : R.fileNow)
+    fn.innerHTML = period ? (doc==="notice" ? R.fileNotice : R.fileNow)
       : (doc==="nod" ? R.nodAction : R.fileUnsure);
     fn.classList.remove("hidden");
     document.getElementById("checkWrap").classList.add("hidden");
