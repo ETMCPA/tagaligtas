@@ -1,36 +1,43 @@
-# TagaSuri — public funnel (v1)
+# TagaLigtas — public funnel
 
-Static, self-contained landing + free triage for **ETM-Tax Agent Office [ETM-TAO], Inc.**
-No build step, no backend, no client data. This folder is deliberately isolated from the
-case documents in the parent folder so those are never deployed or pushed anywhere.
+Static, trilingual (English / Pilipino / 中文) funnel for **ETM-Tax Agent Office [ETM-TAO], Inc.**
+For anyone who received a BIR letter (LoA/eLA, Notice, NOD, PAN, FLD/FAN, FDDA, FD). It runs a
+free deadline check, then guides the taxpayer toward a paid **Executive Summary** (₱5,600 =
+₱5,000 + 12% VAT) of their Letter of Authority.
 
-## Files
-- `index.html` — the whole site (inline CSS + JS). Trilingual EN / TL / 中.
-- `favicon.svg` — browser-tab icon (magnifier = "the examiner").
-- `og-image.svg` — Facebook / Messenger share card.
+> This page is public education, not tax or legal advice. It does not read documents itself.
 
-## What it does (and deliberately does NOT do)
-- **Does:** hero + trust, a free 2-minute triage that shows a *non-authoritative* deadline
-  estimate, and a "Book a Case Appraisal" CTA that opens Facebook Messenger
-  (`m.me/327345850608888`).
-- **Does NOT:** read documents, detect nullity grounds, generate any instrument, or take
-  payment. Those are later phases, gated by a UPL/venue legal opinion. This page only
-  *informs*; it files nothing and practices no law.
+## Pages
+- `index.html` — landing + free triage (deadline estimate) + share step. Trilingual, inline CSS/JS.
+- `order-slip.html` — intake: contact details + Google Drive folder link → captured to Supabase.
+- `settlement.html` — provider-neutral checkout (PayMongo gateway; GCash/bank manual rails).
+- `privacy.html` / `terms.html` / `refund.html` — policy pages.
+- `favicon.svg`, `og-image.svg`, `founder.png` (background-removed portrait) — assets.
 
-## Deploy (pick one, ~2 minutes)
-- **Netlify Drop:** drag this folder onto https://app.netlify.com/drop
-- **GitHub Pages:** push this folder to a repo → Settings → Pages → deploy from branch
-- **Vercel / Cloudflare Pages:** "import project", framework preset = "Other" (static)
+## Backend (Supabase project `aodkheohhbzcgvzhjekx`)
+Source of truth for the edge functions lives in **`supabase/functions/`**:
+- `create-order` — captures Order Slip intake into the `orders` table (honeypot + input validation).
+- `create-checkout` — creates a PayMongo Checkout Session for ₱5,600, keyed by Order No.
+- `paymongo-webhook` — verifies the PayMongo signature, records the payment, marks the order paid.
 
-## After you have a domain (do this once)
-1. In `index.html`, set the two share URLs to absolute paths:
-   - `og:image` / `twitter:image` → `https://YOUR-DOMAIN/og-image.svg`
-   - add `<meta property="og:url" content="https://YOUR-DOMAIN/">`
-2. For the crispest Facebook card, export `og-image.svg` to **`og-image.png` (1200×630)**
-   and point the tags at the PNG — some FB scrapers skip SVG.
-3. Re-scrape at https://developers.facebook.com/tools/debug/ so Messenger shows the new card.
+Tables: `orders`, `payments`. Secrets (service role, PayMongo keys, webhook secret) live in Supabase
+env only — never in this repo or the static HTML.
 
-## Payments (deferred, by design)
-Collect the ₱5,000 manually over Messenger during the pilot. Only after the pilot proves
-willingness-to-pay, add a hosted PH gateway (PayMongo / Xendit / Maya). Keep only a payment
-reference on the operator record — never card data (zero-retention).
+## Language persistence
+The chosen language is stored in `localStorage` (`tl_lang`) and carried across pages via `&lang=`,
+so a Pilipino/中文 visitor stays in their language through the whole funnel.
+
+## Deploy (GitHub Pages)
+This repo's root is served at **https://etmcpa.github.io/tagaligtas/**. Deploy = push to `main`:
+```
+git add -A && git commit -m "…" && git push origin main
+```
+Pages rebuilds in ~1–2 min. `.gitignore` keeps internal docs (`BUILD_SPEC.md`, `TRIAGE_SPEC.md`,
+`UX_STATE_MAP.md`, `CLAUDE.md`), secrets, and client documents (`*.pdf/*.docx/*.pages/…`) out of
+the public deploy.
+
+## Pilot status
+Payment runs in **TEST mode** (a "you will NOT be charged" banner shows on order-slip + settlement);
+`create-order` intake is live. Document reading and the Executive Summary are done by a human
+practitioner. The Statutory Demand / Statutory Request instrument is parked pending a UPL + venue
+legal opinion.

@@ -119,6 +119,8 @@
     <p class="reassure" data-i="intro">Enter your contact details and the link to your Google Drive folder. We read the folder and complete the Order Slip below — we don't re-ask for anything already in your documents.</p>
 
     <form id="orderForm">
+      <!-- Honeypot: hidden from humans; bots that auto-fill every field trip it. Checked server-side in create-order. -->
+      <input type="text" id="uhp" name="hp" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;pointer-events:none">
       <!-- ============ USER ENTERS ============ -->
       <div class="sechead" data-i="secYou">Your details</div>
       <div class="sechint" data-i="secYouHint">The only things not already in your folder.</div>
@@ -311,7 +313,7 @@
     lastData=d;
     // Reliable intake: save the order to the database immediately (the email below is a fallback).
     fetch(CREATE_ORDER_FN,{method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({order_no:ORDER_NO,name:d.name,email:d.email,mobile:d.mobile,drive_link:d.drive})}).catch(()=>{});
+      body:JSON.stringify({order_no:ORDER_NO,name:d.name,email:d.email,mobile:d.mobile,drive_link:d.drive,hp:(el("uhp")?el("uhp").value:"")})}).catch(()=>{});
     renderSent(false);              // show the email buttons immediately, regardless of clipboard
     const body=SHARE[LANG].msg(d);
     if(navigator.clipboard && navigator.clipboard.writeText){
