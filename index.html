@@ -263,6 +263,7 @@
         <div class="ctawrap" style="padding:14px 0 0">
           <button class="btn btn-primary" id="sendBtn" data-i="sendCta">Continue to your Order Slip →</button>
           <div class="btn-sub" data-i="sendHint">Next: add your contact details and confirm the facts we'll read from your folder.</div>
+          <a href="#" id="skipDrive" data-i="skipDrive" style="display:block;text-align:center;font-size:12.5px;font-weight:700;color:var(--slate);margin-top:12px;text-decoration:underline">I don't have my documents yet — continue anyway →</a>
         </div>
         <p class="privacy">🔒 <b data-i="shareSafe">Read-only, only the folder you share.</b> <span data-i="shareSafe2">Protected under the Data Privacy Act (RA 10173); used only for your case.</span></p>
       </div>
@@ -304,7 +305,7 @@
       shareIntro:"Put all your BIR documents in one folder — the LoA, every notice, and your replies — then share the link. We open it read-only, and only the folder you send.",
       how1:"In Google Drive, right-click your folder → <b>Share</b>.", how2:"Keep it <b>private</b> — do NOT choose “anyone with the link.” We’ll request access; you just tap <b>Approve</b>.", how3:"Click <b>Copy link</b>, then paste it below.",
       pasteLabel:"Paste your Google Drive folder link", invalidLink:"That doesn't look like a Google Drive link — please double-check.",
-      sendCta:"Continue to your Order Slip →", sendHint:"Next: add your contact details and confirm the facts we'll read from your folder.",
+      sendCta:"Continue to your Order Slip →", sendHint:"Next: add your contact details and confirm the facts we'll read from your folder.", skipDrive:"I don't have my documents yet — continue anyway →",
       shareSafe:"Read-only, only the folder you share.", shareSafe2:"Protected under the Data Privacy Act (RA 10173); used only for your case.",
       fbDetails:"Visit Kataxpayer FB for Details" },
     tl:{ kicker:"Audit ng BIR? Basahin ito muna", fees:"Fixed at malinaw na bayad",
@@ -328,7 +329,7 @@
       shareIntro:"Ilagay ang lahat ng BIR documents sa isang folder — ang LoA, bawat notice, at ang iyong mga sagot — tapos ibahagi ang link. Read-only lang, at tanging ang folder na ibinahagi mo.",
       how1:"Sa Google Drive, i-right-click ang folder → <b>Share</b>.", how2:"Panatilihing <b>pribado</b> — HUWAG piliin ang “anyone with the link.” Hihingi kami ng access; i-<b>Approve</b> mo lang.", how3:"I-click ang <b>Copy link</b>, tapos i-paste dito sa baba.",
       pasteLabel:"I-paste ang link ng iyong Google Drive folder", invalidLink:"Mukhang hindi ito Google Drive link — pakisuri muli.",
-      sendCta:"Magpatuloy sa iyong Order Slip →", sendHint:"Susunod: idagdag ang iyong contact at kumpirmahin ang mga datos na babasahin namin sa folder mo.",
+      sendCta:"Magpatuloy sa iyong Order Slip →", sendHint:"Susunod: idagdag ang iyong contact at kumpirmahin ang mga datos na babasahin namin sa folder mo.", skipDrive:"Wala pa ang mga dokumento ko — magpatuloy pa rin →",
       shareSafe:"Read-only, tanging ang folder na ibinahagi mo.", shareSafe2:"Protektado sa ilalim ng Data Privacy Act (RA 10173); para lang sa kaso mo.",
       fbDetails:"Bisitahin ang Kataxpayer FB para sa Detalye" },
     zh:{ kicker:"BIR 稽查？请先读这里", fees:"收费固定透明",
@@ -352,7 +353,7 @@
       shareIntro:"把所有 BIR 文件放进一个文件夹 — LoA、每份通知、以及你的答复 — 然后分享链接。我们只读打开，且仅限你分享的文件夹。",
       how1:"在 Google Drive 中右键点击文件夹 → <b>共享 / Share</b>。", how2:"保持<b>私密</b> — 不要选“知道链接的任何人”。我们会请求访问，你点<b>批准（Approve）</b>即可。", how3:"点击<b>复制链接 / Copy link</b>，然后粘贴到下方。",
       pasteLabel:"粘贴你的 Google Drive 文件夹链接", invalidLink:"这看起来不像 Google Drive 链接 — 请再核对。",
-      sendCta:"继续到你的订单单据 →", sendHint:"下一步：填写你的联系资料，并确认我们将从你文件夹读取的信息。",
+      sendCta:"继续到你的订单单据 →", sendHint:"下一步：填写你的联系资料，并确认我们将从你文件夹读取的信息。", skipDrive:"我还没有文件 — 仍然继续 →",
       shareSafe:"只读，仅限你分享的文件夹。", shareSafe2:"受《数据隐私法》(RA 10173) 保护；仅用于你的案件。",
       fbDetails:"访问 Kataxpayer FB 了解详情" }
   };
@@ -553,6 +554,8 @@
     // contact details, confirm-the-facts, and checkout happen. No email jump here.
     location.href = "order-slip.html?drive=" + encodeURIComponent(v) + "&lang=" + LANG;
   });
+  var skipDrive = document.getElementById("skipDrive");
+  if(skipDrive){ skipDrive.addEventListener("click", (e)=>{ e.preventDefault(); location.href = "order-slip.html?lang=" + LANG; }); }
 
   // ---- feedback capture ----
   // To switch to a Google Form, paste its URL into FEEDBACK_URL below — nothing else changes.
