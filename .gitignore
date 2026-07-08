@@ -5,6 +5,7 @@
 .vscode/
 # internal working docs — keep out of the public GitHub Pages deploy
 BUILD_SPEC.md
+TRIAGE_SPEC.md
 UX_STATE_MAP.md
 CLAUDE.md
 # never commit client documents or secrets into the deployable site

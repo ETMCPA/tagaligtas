@@ -19,8 +19,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TagaLigtas — Settle your Case Appraisal</title>
-<meta name="description" content="Settle your ₱5,000 Case Appraisal with ETM-Tax Agent Office [ETM-TAO], Inc. Manual payment, reference confirmed by email.">
+<title>TagaLigtas — Settle your Executive Summary</title>
+<meta name="description" content="Settle your ₱5,600 Executive Summary with ETM-Tax Agent Office [ETM-TAO], Inc. Manual payment, reference confirmed by email.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="theme-color" content="#0f2540">
 <style>
@@ -38,14 +38,14 @@
   .wrap{max-width:480px;margin:0 auto;background:var(--card);min-height:100vh;box-shadow:0 0 60px rgba(15,37,64,.06)}
   a{color:var(--green-strong)}
   :focus-visible{outline:3px solid var(--green);outline-offset:2px;border-radius:6px}
-  header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
-    padding:13px 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header{position:sticky;top:0;z-index:10;display:flex;flex-direction:column;gap:10px;
+    padding:12px 18px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
   .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
-  .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
-  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--slate);background:none;border:none;
-    padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
-  .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
+  .langtabs{display:flex;gap:4px;background:var(--green-soft);border-radius:999px;padding:4px}
+  .langtabs button{flex:1;font:inherit;font-size:13px;font-weight:700;color:var(--slate);background:none;border:none;
+    padding:9px 8px;border-radius:999px;cursor:pointer;min-height:40px;transition:background .15s,color .15s}
+  .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff;box-shadow:0 1px 3px rgba(15,37,64,.18)}
   main{padding:24px 20px 8px}
   .step{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--green-strong)}
   .q{font-size:22px;font-weight:800;margin:6px 0 5px;letter-spacing:-.02em;text-wrap:balance}
@@ -109,9 +109,9 @@
   <header>
     <a href="index.html" class="logo">Taga<span>Ligtas</span></a>
     <div class="langtabs" role="group" aria-label="Language">
-      <button data-lang="en" aria-pressed="true">EN</button>
-      <button data-lang="tl" aria-pressed="false">TL</button>
-      <button data-lang="zh" aria-pressed="false">中</button>
+      <button data-lang="en" aria-pressed="true">English</button>
+      <button data-lang="tl" aria-pressed="false">Pilipino</button>
+      <button data-lang="zh" aria-pressed="false">Chinese</button>
     </div>
   </header>
 
@@ -119,12 +119,12 @@
     <a href="index.html" class="back" data-i="back">← Back</a>
     <!-- PILOT TEST banner — remove when payment goes live -->
     <div style="background:#fff7e6;border:1px solid #f0d48a;color:#7a5b00;border-radius:11px;padding:10px 13px;font-size:12.5px;font-weight:700;line-height:1.5;margin-bottom:14px">🧪 TEST MODE — you will <u>not</u> be charged. · Test lang ito — walang babayaran. · 测试模式 — 不会向你收费。</div>
-    <div class="step" data-i="step">Step 4 · Settle your Case Appraisal</div>
+    <div class="step" data-i="step">Step 4 · Settle your Executive Summary</div>
     <h1 class="q" data-i="title">Settle your Executive Summary</h1>
     <p class="reassure" data-i="intro">Pay the fixed fee securely below. We confirm your payment and begin your appraisal.</p>
 
     <div class="invoice">
-      <div class="inv-head"><span data-i="invName">Case Appraisal — Executive Summary</span>
+      <div class="inv-head"><span data-i="invName">Executive Summary</span>
         <div class="sub" data-i="invBy">ETM-Tax Agent Office [ETM-TAO], Inc.</div>
         <div class="sub" id="invOrder"></div></div>
       <div class="inv-row"><span class="lbl" data-i="invFee">Professional fee</span><span class="val">₱5,000.00</span></div>
@@ -180,7 +180,7 @@
 
 <script>
   const EMAIL = "taxspecialista@kataxpayer.com";
-  const SUBJECT = "Case Appraisal payment reference";
+  const SUBJECT = "Executive Summary payment reference";
   // Order No. carried from the Order Slip (?order=...) — shown on the invoice and used as the payment note for matching.
   var ORDER_NO = (function(){ var m=/[?&]order=([^&#]+)/.exec(location.search); return m?decodeURIComponent(m[1]):""; })();
 
@@ -243,9 +243,9 @@
   // =====================================================================
 
   const I18N = {
-    en:{ back:"← Back", step:"Step 4 · Settle your Case Appraisal", title:"Settle your Executive Summary",
+    en:{ back:"← Back", step:"Step 4 · Settle your Executive Summary", title:"Settle your Executive Summary",
       intro:"Pay the fixed fee securely below. We confirm your payment and begin your appraisal.",
-      invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invName:"Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Total due",
       invCredit:"Credited to your case if you proceed to a Statutory Demand.",
       payHow:"How to pay", payOnlineCta:"Pay ₱5,600 online →", payErr:"Sorry, couldn't start online payment. Please try again shortly.", paidThanks:"✓ Payment received — we're confirming it now and will email you shortly. You may close this page.",
@@ -258,9 +258,9 @@
       fbDetails:"Visit Kataxpayer FB for Details", footBy:"by",
       footNote:"This page stores no card details — payments are processed securely by our payment provider. Not tax or legal advice.",
       privLbl:"We store only your payment reference — never card or account credentials.", privBody:"Protected under the Data Privacy Act (RA 10173); used only for your case." },
-    tl:{ back:"← Bumalik", step:"Hakbang 4 · Bayaran ang Case Appraisal", title:"Bayaran ang iyong Executive Summary",
+    tl:{ back:"← Bumalik", step:"Hakbang 4 · Bayaran ang Executive Summary", title:"Bayaran ang iyong Executive Summary",
       intro:"Bayaran nang ligtas ang nakatakdang bayad sa baba. Kukumpirmahin namin ang bayad at sisimulan ang appraisal.",
-      invName:"Pagsusuri ng Kaso — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invName:"Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Propesyonal na bayad", invVat:"VAT (12%)", invTotal:"Kabuuang babayaran",
       invCredit:"Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
       payHow:"Paano magbayad", payOnlineCta:"Bayaran ang ₱5,600 online →", payErr:"Paumanhin, hindi masimulan ang online payment. Subukan muli mamaya.", paidThanks:"✓ Natanggap ang bayad — kinukumpirma namin ngayon at mag-e-email kami sa iyo. Puwede mo nang isara ang pahinang ito.",
@@ -273,9 +273,9 @@
       fbDetails:"Bisitahin ang Kataxpayer FB para sa Detalye", footBy:"ng",
       footNote:"Hindi nag-iimbak ng card details ang pahinang ito — ligtas na pinoproseso ang bayad ng aming payment provider. Hindi tax o legal advice.",
       privLbl:"Reference number lang ng bayad ang itinatago namin — hindi card o account credentials.", privBody:"Protektado sa ilalim ng Data Privacy Act (RA 10173); para lang sa kaso mo." },
-    zh:{ back:"← 返回", step:"第 4 步 · 结算案件评估", title:"结算你的行政摘要",
+    zh:{ back:"← 返回", step:"第 4 步 · 结算行政摘要", title:"结算你的行政摘要",
       intro:"在下方安全支付固定费用。我们确认付款后即开始评估。",
-      invName:"案件评估 — 行政摘要（Executive Summary）", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
+      invName:"行政摘要（Executive Summary）", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"专业费用", invVat:"增值税（12%）", invTotal:"应付总额",
       invCredit:"若你继续委托法定要求书（Statutory Demand），此费用可抵扣。",
       payHow:"如何付款", payOnlineCta:"在线支付 ₱5,600 →", payErr:"抱歉，无法开始在线支付。请稍后重试。", paidThanks:"✓ 已收到付款 — 我们正在确认，稍后将以电邮通知你。你可以关闭此页面。",
@@ -290,13 +290,13 @@
       privLbl:"我们只保存你的付款参考号 — 绝不保存银行卡或账户凭据。", privBody:"受《数据隐私法》(RA 10173) 保护；仅用于你的案件。" }
   };
   const SHARE = {
-    en:{ msg:r=>`Hi TagaLigtas — I've paid the ₱5,600 for my Case Appraisal (Executive Summary). My payment reference is:\n${r}`,
+    en:{ msg:r=>`Hi TagaLigtas — I've paid the ₱5,600 for my Executive Summary. My payment reference is:\n${r}`,
          steps:`Almost done — we've prepared a ready-to-send message to ${EMAIL} with your reference. Open it in Gmail (or your email app) and press Send (attach your screenshot too if you have one). Nothing is sent until you press Send. Or copy the message below and email it yourself.`,
          ok:"✓ Copied to your clipboard.", fail:"Couldn't copy automatically — press and hold the box below to select it, then tap Copy.", gmail:"Open in Gmail →", open:"Open in my email app →" },
-    tl:{ msg:r=>`Kumusta TagaLigtas — nabayaran ko na ang ₱5,600 para sa Case Appraisal (Executive Summary). Ang aking payment reference ay:\n${r}`,
+    tl:{ msg:r=>`Kumusta TagaLigtas — nabayaran ko na ang ₱5,600 para sa Executive Summary. Ang aking payment reference ay:\n${r}`,
          steps:`Malapit na — nakahanda na ang mensahe papunta sa ${EMAIL} kasama ang reference mo. Buksan ito sa Gmail (o sa iyong email app) at pindutin ang Send (i-attach din ang screenshot kung meron). Walang maipapadala hangga't hindi mo pinipindot ang Send. O kopyahin ang mensahe sa baba at i-email mo mismo.`,
          ok:"✓ Nakopya na sa clipboard.", fail:"Hindi awtomatikong nakopya — pindutin nang matagal ang kahon sa baba, tapos i-tap ang Copy.", gmail:"Buksan sa Gmail →", open:"Buksan sa email app →" },
-    zh:{ msg:r=>`你好 TagaLigtas — 我已支付案件评估（行政摘要）的 ₱5,600。我的付款参考号是：\n${r}`,
+    zh:{ msg:r=>`你好 TagaLigtas — 我已支付行政摘要的 ₱5,600。我的付款参考号是：\n${r}`,
          steps:`就快好了 — 我们已把含你参考号、发往 ${EMAIL} 的邮件填好。在 Gmail（或你的邮件应用）中打开并按发送（如有截图请一并附上）。未按发送前不会发出任何邮件。或复制下方消息自行发送。`,
          ok:"✓ 已复制到剪贴板。", fail:"未能自动复制 — 长按下方方框选中，然后点复制。", gmail:"在 Gmail 中打开 →", open:"用邮件应用打开 →" }
   };
