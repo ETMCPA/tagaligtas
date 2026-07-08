@@ -13,7 +13,7 @@
        server-side on confirmation; the format is shown as an example.
 
   Zero facts are asked here that already live in the folder. No secrets in this HTML.
-  Submit hands off by email (same pattern as the rest of the app), then links to payment.
+  Submit captures the order to Supabase (authoritative), shows the client a receipt, then links to payment.
   =====================================================================================
 -->
 <html lang="en">
@@ -166,7 +166,7 @@
 
       <div style="padding:16px 0 0">
         <button class="btn btn-primary" type="submit" id="submitBtn" data-i="submitCta">Submit my order →</button>
-        <div class="btn-sub" data-i="submitSub">We prefill an email with your details — just press send.</div>
+        <div class="btn-sub" data-i="submitSub">We save your details securely — no email needed. Payment is the next step.</div>
       </div>
     </form>
 
@@ -213,7 +213,7 @@
       soAmount:"Amount Due", soRdo:"BIR Office / RDO", soPeriod:"Taxable Period", soDocDate:"Document Date",
       pend1:"Pending folder review", pend2:"Pending folder review", pend3:"Pending folder review", pend4:"Pending folder review", pend5:"Pending folder review",
       amountHint:"Amount Due is the fixed Executive Summary fee (₱5,000 + 12% VAT). Credited to your case if you proceed to a Statutory Demand.",
-      submitCta:"Submit my order →", submitSub:"We prefill an email with your details — just press send.",
+      submitCta:"Submit my order →", submitSub:"We save your details securely — no email needed. Payment is the next step.",
       fbDetails:"Visit Kataxpayer FB for Details", footBy:"by",
       footNote:"This is a guide to getting the answer and not a legal advice. Your discretion is a must.",
       privLbl:"We read only the folder you share, as Viewer.", privBody:"You own your data; nothing is retained. Protected under the Data Privacy Act (RA 10173)." },
@@ -231,7 +231,7 @@
       soAmount:"Halagang Babayaran", soRdo:"Tanggapan ng BIR / RDO", soPeriod:"Panahong Nabubuwisan", soDocDate:"Petsa ng Dokumento",
       pend1:"Naghihintay ng review ng folder", pend2:"Naghihintay ng review ng folder", pend3:"Naghihintay ng review ng folder", pend4:"Naghihintay ng review ng folder", pend5:"Naghihintay ng review ng folder",
       amountHint:"Ang Halagang Babayaran ay ang nakatakdang bayad sa Executive Summary (₱5,000 + 12% VAT). Ibabawas sa iyong kaso kung magpapatuloy sa Statutory Demand.",
-      submitCta:"Isumite ang order →", submitSub:"Maghahanda kami ng email kasama ang mga detalye mo — pindutin lang ang send.",
+      submitCta:"Isumite ang order →", submitSub:"Ligtas na naming nai-save ang iyong mga detalye — walang email. Susunod ang bayad.",
       fbDetails:"Bisitahin ang Kataxpayer FB para sa Detalye", footBy:"ng",
       footNote:"Ito ay gabay sa pagkuha ng sagot at hindi legal advice. Kailangan ang iyong pagpapasya.",
       privLbl:"Binabasa lang namin ang folder na ibinahagi mo, bilang Viewer.", privBody:"Ikaw ang may-ari ng iyong data; walang itinatago. Protektado sa ilalim ng Data Privacy Act (RA 10173)." },
@@ -249,27 +249,27 @@
       soAmount:"应付金额", soRdo:"BIR 办公室 / RDO", soPeriod:"课税期间", soDocDate:"文件日期",
       pend1:"待文件夹审阅", pend2:"待文件夹审阅", pend3:"待文件夹审阅", pend4:"待文件夹审阅", pend5:"待文件夹审阅",
       amountHint:"应付金额为固定的行政摘要费用（₱5,000 + 12% 增值税）。若继续委托法定要求书，此费用可抵扣。",
-      submitCta:"提交我的订单 →", submitSub:"我们会准备一封含你资料的电邮 — 按发送即可。",
+      submitCta:"提交我的订单 →", submitSub:"我们已安全保存你的资料 — 无需邮件。下一步是付款。",
       fbDetails:"访问 Kataxpayer FB 了解详情", footBy:"由",
       footNote:"本页是获取答案的指引，并非法律意见。请务必自行判断。",
       privLbl:"我们仅以查看者身份读取你分享的文件夹。", privBody:"你拥有自己的数据；不作任何保留。受《数据隐私法》(RA 10173) 保护。" }
   };
   const SHARE = {
-    en:{ msg:d=>`Hi TagaLigtas — I'd like to order an Executive Summary for my Letter of Authority.\n\nOrder No: ${ORDER_NO}\nName: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProduct: Executive Summary for my LoA\nAmount Due: ₱5,600.00\nI confirm the details above are correct.`,
-         steps:`Almost done — we've prepared a ready-to-send message to ${EMAIL}. Open it in Gmail (or your email app) and press Send. Nothing is sent until you press Send. Then continue to payment.`,
-         ok:"✓ Copied to your clipboard.", fail:"Couldn't copy automatically — press and hold the box below to select it, then tap Copy.",
-         gmail:"Open in Gmail →", open:"Open in my email app →", pay:"Continue to payment →" },
-    tl:{ msg:d=>`Kumusta TagaLigtas — gusto kong mag-order ng Executive Summary para sa aking Letter of Authority.\n\nOrder No: ${ORDER_NO}\nPangalan: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProdukto: Executive Summary para sa aking LoA\nHalagang Babayaran: ₱5,600.00\nKinukumpirma ko na tama ang mga detalye sa itaas.`,
-         steps:`Malapit na — nakahanda na ang mensahe papunta sa ${EMAIL}. Buksan ito sa Gmail (o sa iyong email app) at pindutin ang Send. Walang maipapadala hangga't hindi mo pinipindot ang Send. Tapos magpatuloy sa bayad.`,
-         ok:"✓ Nakopya na sa clipboard.", fail:"Hindi awtomatikong nakopya — pindutin nang matagal ang kahon sa baba, tapos i-tap ang Copy.",
-         gmail:"Buksan sa Gmail →", open:"Buksan sa email app →", pay:"Magpatuloy sa bayad →" },
-    zh:{ msg:d=>`你好 TagaLigtas — 我想为我的授权函（Letter of Authority）订购行政摘要。\n\n订单号：${ORDER_NO}\n姓名：${d.name}\n电邮：${d.email}\n手机：${d.mobile}\nGoogle Drive 文件夹：${d.drive}\n\n产品：针对我的 LoA 的行政摘要\n应付金额：₱5,600.00\n我确认以上资料正确无误。`,
-         steps:`就快好了 — 我们已把发往 ${EMAIL} 的邮件填好。在 Gmail（或你的邮件应用）中打开并按发送。未按发送前不会发出任何邮件。然后继续付款。`,
-         ok:"✓ 已复制到剪贴板。", fail:"未能自动复制 — 长按下方方框选中，然后点复制。",
-         gmail:"在 Gmail 中打开 →", open:"用邮件应用打开 →", pay:"继续付款 →" }
+    en:{ heading:"✓ Order received — here's your copy.",
+         receipt:d=>`Order No: ${ORDER_NO}\nName: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProduct: Executive Summary for my LoA\nAmount Due: ₱5,600.00`,
+         saved:"We've saved your details securely — nothing to email. Your Executive Summary and BIR-registered Invoice will be sent to your email.",
+         pay:"Pay ₱5,600 & start my Executive Summary →" },
+    tl:{ heading:"✓ Natanggap ang order — narito ang iyong kopya.",
+         receipt:d=>`Order No: ${ORDER_NO}\nPangalan: ${d.name}\nEmail: ${d.email}\nMobile: ${d.mobile}\nGoogle Drive folder: ${d.drive}\n\nProdukto: Executive Summary para sa aking LoA\nHalagang Babayaran: ₱5,600.00`,
+         saved:"Ligtas na naming nai-save ang iyong mga detalye — walang email na ipapadala. Ang iyong Executive Summary at BIR-registered Invoice ay ipapadala sa iyong email.",
+         pay:"Bayaran ang ₱5,600 & simulan ang Executive Summary ko →" },
+    zh:{ heading:"✓ 已收到订单 — 这是你的副本。",
+         receipt:d=>`订单号：${ORDER_NO}\n姓名：${d.name}\n电邮：${d.email}\n手机：${d.mobile}\nGoogle Drive 文件夹：${d.drive}\n\n产品：针对我的 LoA 的行政摘要\n应付金额：₱5,600.00`,
+         saved:"我们已安全保存你的资料 — 无需发送邮件。你的行政摘要与 BIR 正式发票将发送到你的电邮。",
+         pay:"支付 ₱5,600 并开始我的行政摘要 →" }
   };
 
-  let LANG="en", lastData=null, lastOk=false;
+  let LANG="en", lastData=null;
   const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   function applyLang(lang){
     LANG=lang;
@@ -288,17 +288,12 @@
              mobile:el("umobile").value.trim(), drive:el("udrive").value.trim(),
              confirmed:el("uconfirm").checked };
   }
-  function renderSent(ok){
-    if(typeof ok==="boolean") lastOk=ok;
-    const S=SHARE[LANG], body=S.msg(lastData);
-    const mailto = `mailto:${EMAIL}?subject=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(body)}`;
-    const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(EMAIL)}&su=${encodeURIComponent(SUBJECT)}&body=${encodeURIComponent(body)}`;
-    sent.innerHTML = `<div><b>${S.steps}</b></div>`
+  function renderSent(){
+    const S=SHARE[LANG], body=S.receipt(lastData);
+    sent.innerHTML = `<div style="font-weight:800;font-size:15px;color:var(--navy)">${S.heading}</div>`
       + `<div class="msgbox">${esc(body)}</div>`
-      + `<div style="font-size:13px;color:var(--slate);margin-top:8px">${lastOk?S.ok:S.fail}</div>`
-      + `<a class="btn btn-primary" href="${gmail}" target="_blank" rel="noopener" style="margin-top:12px">${S.gmail}</a>`
-      + `<a class="btn btn-ghost" href="${mailto}" style="margin-top:9px">${S.open}</a>`
-      + `<a class="btn btn-ghost" href="${PAY_URL}?order=${encodeURIComponent(ORDER_NO)}&lang=${LANG}" style="margin-top:9px">${S.pay}</a>`;
+      + `<div style="font-size:12.5px;color:var(--slate);margin-top:9px;line-height:1.5">${S.saved}</div>`
+      + `<a class="btn btn-primary" href="${PAY_URL}?order=${encodeURIComponent(ORDER_NO)}&lang=${LANG}" style="margin-top:13px">${S.pay}</a>`;
     sent.classList.add("show");
   }
   [ "uname","uemail","umobile","udrive","uconfirm" ].forEach(id=>el(id).addEventListener("input",()=>formWarn.classList.add("hidden")));
@@ -311,14 +306,12 @@
       el(first).focus(); return;
     }
     lastData=d;
-    // Reliable intake: save the order to the database immediately (the email below is a fallback).
+    // Reliable intake: the database capture is authoritative — no email step needed.
     fetch(CREATE_ORDER_FN,{method:"POST",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({order_no:ORDER_NO,name:d.name,email:d.email,mobile:d.mobile,drive_link:d.drive,hp:(el("uhp")?el("uhp").value:"")})}).catch(()=>{});
-    renderSent(false);              // show the email buttons immediately, regardless of clipboard
-    const body=SHARE[LANG].msg(d);
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(body).then(()=>renderSent(true)).catch(()=>{});
-    }
+    // Carry email + order no to the payment page's thank-you (this session only).
+    try{ sessionStorage.setItem("tl_order_email", d.email); sessionStorage.setItem("tl_order_no", ORDER_NO); }catch(e){}
+    renderSent();
     sent.scrollIntoView({behavior:"smooth",block:"center"});
   });
   // Show the generated Order No. on the slip
