@@ -44,7 +44,7 @@
   .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
   .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
   .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
-  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--slate);background:none;border:none;
     padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
   .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
   main{padding:24px 20px 8px}
@@ -56,7 +56,7 @@
   label.fl{display:block;font-size:13px;font-weight:700;margin:14px 0 6px}
   input[type=text],input[type=email],input[type=tel],input[type=url]{width:100%;font:inherit;font-size:15px;
     padding:13px 14px;border:1px solid var(--line);border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
-  input::placeholder{color:#aeb8c6}
+  input::placeholder{color:#667085}
   .hint{font-size:12px;color:var(--muted);margin-top:6px}
   .hint b{color:var(--slate)}
   /* confirm checkbox */
@@ -112,6 +112,8 @@
 
   <main>
     <a href="index.html" class="back" data-i="back">← Back</a>
+    <!-- PILOT TEST banner — remove when payment goes live -->
+    <div style="background:#fff7e6;border:1px solid #f0d48a;color:#7a5b00;border-radius:11px;padding:10px 13px;font-size:12.5px;font-weight:700;line-height:1.5;margin-bottom:14px">🧪 TEST MODE — you will <u>not</u> be charged. · Test lang ito — walang babayaran. · 测试模式 — 不会向你收费。</div>
     <div class="step" data-i="step">Step 3 · Order Slip</div>
     <h1 class="q" data-i="title">Confirm your order</h1>
     <p class="reassure" data-i="intro">Enter your contact details and the link to your Google Drive folder. We read the folder and complete the Order Slip below — we don't re-ask for anything already in your documents.</p>
@@ -269,6 +271,7 @@
   const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
   function applyLang(lang){
     LANG=lang;
+    try{ localStorage.setItem("tl_lang", lang); }catch(e){}
     document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="tl"?"tl":"en");
     document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(I18N[lang][k]!=null) el.innerHTML=I18N[lang][k]; });
     document.querySelectorAll(".langtabs button").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.lang===lang)));
@@ -293,7 +296,7 @@
       + `<div style="font-size:13px;color:var(--slate);margin-top:8px">${lastOk?S.ok:S.fail}</div>`
       + `<a class="btn btn-primary" href="${gmail}" target="_blank" rel="noopener" style="margin-top:12px">${S.gmail}</a>`
       + `<a class="btn btn-ghost" href="${mailto}" style="margin-top:9px">${S.open}</a>`
-      + `<a class="btn btn-ghost" href="${PAY_URL}?order=${encodeURIComponent(ORDER_NO)}" style="margin-top:9px">${S.pay}</a>`;
+      + `<a class="btn btn-ghost" href="${PAY_URL}?order=${encodeURIComponent(ORDER_NO)}&lang=${LANG}" style="margin-top:9px">${S.pay}</a>`;
     sent.classList.add("show");
   }
   [ "uname","uemail","umobile","udrive","uconfirm" ].forEach(id=>el(id).addEventListener("input",()=>formWarn.classList.add("hidden")));
@@ -320,7 +323,12 @@
   (function(){ var o=el("orderNo"); if(o) o.textContent=ORDER_NO; })();
   // Carry-forward from the funnel: prefill the Drive link if passed as ?drive=
   (function(){ var m=/[?&]drive=([^&#]+)/.exec(location.search); if(m){ try{ el("udrive").value=decodeURIComponent(m[1]); }catch(e){} } })();
-  applyLang("en");
+  (function initLang(){
+    var q=(new URLSearchParams(location.search)).get("lang");
+    var saved; try{ saved=localStorage.getItem("tl_lang"); }catch(e){}
+    var lang = [q,saved].find(function(l){ return l==="en"||l==="tl"||l==="zh"; }) || "en";
+    applyLang(lang);
+  })();
 </script>
 </body>
 </html>

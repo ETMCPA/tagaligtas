@@ -42,7 +42,7 @@
   .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
   .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
   .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
-  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--slate);background:none;border:none;
     padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
   .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
 
@@ -108,10 +108,13 @@
   .opt .dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:0 0 18px}
   .opt:has(input:checked){border-color:var(--green);background:var(--green-soft);color:var(--navy)}
   .opt:has(input:checked) .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
+  /* Fallback for browsers without :has() (older PH Android): sibling selector fills the dot so the selected option is always visible */
+  .opt input:checked ~ .dot{border-color:var(--green-strong);background:var(--green-strong);box-shadow:inset 0 0 0 3px #fff}
+  .opt:focus-within{outline:2px solid var(--green);outline-offset:2px}
   label.fl{display:block;font-size:13px;font-weight:700;margin-bottom:7px}
   input[type=date],input[type=url]{width:100%;font:inherit;font-size:15px;padding:13px 14px;border:1px solid var(--line);
     border-radius:11px;color:var(--navy);background:#fff;min-height:48px}
-  input[type=url]::placeholder{color:#aeb8c6}
+  input[type=url]::placeholder{color:#667085}
   ol.how{margin:2px 0 16px 20px;padding:0;font-size:13px;color:var(--slate);line-height:1.6}
   ol.how li{margin-bottom:5px}
   ol.how b{color:var(--navy)}
@@ -415,6 +418,7 @@
   let LANG = "en";
   function applyLang(lang){
     LANG = lang;
+    try{ localStorage.setItem("tl_lang", lang); }catch(e){}
     document.documentElement.lang = lang==="zh" ? "zh-CN" : (lang==="tl" ? "tl" : "en");
     document.querySelectorAll("[data-i]").forEach(el=>{
       const k = el.getAttribute("data-i");
@@ -547,7 +551,7 @@
     if(!v || !looksLikeDrive(v)){ linkWarn.classList.remove("hidden"); driveLink.focus(); return; }
     // TPS one-piece flow: carry the Drive link forward into the Order Slip, where
     // contact details, confirm-the-facts, and checkout happen. No email jump here.
-    location.href = "order-slip.html?drive=" + encodeURIComponent(v);
+    location.href = "order-slip.html?drive=" + encodeURIComponent(v) + "&lang=" + LANG;
   });
 
   // ---- feedback capture ----
@@ -561,7 +565,12 @@
       +encodeURIComponent("TagaLigtas test feedback")+"&body="+encodeURIComponent(body);
   })();
 
-  applyLang("en");
+  (function initLang(){
+    var q=(new URLSearchParams(location.search)).get("lang");
+    var saved; try{ saved=localStorage.getItem("tl_lang"); }catch(e){}
+    var lang = [q,saved].find(function(l){ return l==="en"||l==="tl"||l==="zh"; }) || "en";
+    applyLang(lang);
+  })();
 </script>
 </body>
 </html>

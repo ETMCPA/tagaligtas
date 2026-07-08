@@ -43,7 +43,7 @@
   .logo{font-weight:800;font-size:17px;letter-spacing:-.02em;color:var(--navy);text-decoration:none}
   .logo span{color:#1f51ff;-webkit-text-stroke:.25px #000;text-stroke:.25px #000;paint-order:stroke fill}
   .langtabs{display:flex;gap:2px;background:var(--green-soft);border-radius:999px;padding:3px}
-  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--muted);background:none;border:none;
+  .langtabs button{font:inherit;font-size:12px;font-weight:700;color:var(--slate);background:none;border:none;
     padding:5px 11px;border-radius:999px;cursor:pointer;min-height:32px}
   .langtabs button[aria-pressed="true"]{background:var(--green-strong);color:#fff}
   main{padding:24px 20px 8px}
@@ -78,7 +78,7 @@
     border-radius:11px;color:var(--slate);background:#fff;min-height:48px;cursor:pointer}
   input[type=file]::file-selector-button{font:inherit;font-weight:700;font-size:13px;color:#fff;
     background:var(--green-strong);border:none;border-radius:8px;padding:9px 13px;margin-right:11px;cursor:pointer;min-height:36px}
-  input::placeholder{color:#aeb8c6}
+  input::placeholder{color:#667085}
   .hint{font-size:12px;color:var(--muted);margin-top:7px}
   .hint b{color:var(--slate)}
   .btn{display:block;width:100%;font:inherit;font-size:16px;font-weight:800;padding:16px;border-radius:12px;
@@ -117,7 +117,9 @@
 
   <main>
     <a href="index.html" class="back" data-i="back">← Back</a>
-    <div class="step" data-i="step">Step 3 · Settle your Case Appraisal</div>
+    <!-- PILOT TEST banner — remove when payment goes live -->
+    <div style="background:#fff7e6;border:1px solid #f0d48a;color:#7a5b00;border-radius:11px;padding:10px 13px;font-size:12.5px;font-weight:700;line-height:1.5;margin-bottom:14px">🧪 TEST MODE — you will <u>not</u> be charged. · Test lang ito — walang babayaran. · 测试模式 — 不会向你收费。</div>
+    <div class="step" data-i="step">Step 4 · Settle your Case Appraisal</div>
     <h1 class="q" data-i="title">Settle your Executive Summary</h1>
     <p class="reassure" data-i="intro">Pay the fixed fee securely below. We confirm your payment and begin your appraisal.</p>
 
@@ -241,7 +243,7 @@
   // =====================================================================
 
   const I18N = {
-    en:{ back:"← Back", step:"Step 3 · Settle your Case Appraisal", title:"Settle your Executive Summary",
+    en:{ back:"← Back", step:"Step 4 · Settle your Case Appraisal", title:"Settle your Executive Summary",
       intro:"Pay the fixed fee securely below. We confirm your payment and begin your appraisal.",
       invName:"Case Appraisal — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Professional fee", invVat:"VAT (12%)", invTotal:"Total due",
@@ -256,7 +258,7 @@
       fbDetails:"Visit Kataxpayer FB for Details", footBy:"by",
       footNote:"This page stores no card details — payments are processed securely by our payment provider. Not tax or legal advice.",
       privLbl:"We store only your payment reference — never card or account credentials.", privBody:"Protected under the Data Privacy Act (RA 10173); used only for your case." },
-    tl:{ back:"← Bumalik", step:"Hakbang 3 · Bayaran ang Case Appraisal", title:"Bayaran ang iyong Executive Summary",
+    tl:{ back:"← Bumalik", step:"Hakbang 4 · Bayaran ang Case Appraisal", title:"Bayaran ang iyong Executive Summary",
       intro:"Bayaran nang ligtas ang nakatakdang bayad sa baba. Kukumpirmahin namin ang bayad at sisimulan ang appraisal.",
       invName:"Pagsusuri ng Kaso — Executive Summary", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"Propesyonal na bayad", invVat:"VAT (12%)", invTotal:"Kabuuang babayaran",
@@ -271,7 +273,7 @@
       fbDetails:"Bisitahin ang Kataxpayer FB para sa Detalye", footBy:"ng",
       footNote:"Hindi nag-iimbak ng card details ang pahinang ito — ligtas na pinoproseso ang bayad ng aming payment provider. Hindi tax o legal advice.",
       privLbl:"Reference number lang ng bayad ang itinatago namin — hindi card o account credentials.", privBody:"Protektado sa ilalim ng Data Privacy Act (RA 10173); para lang sa kaso mo." },
-    zh:{ back:"← 返回", step:"第 3 步 · 结算案件评估", title:"结算你的行政摘要",
+    zh:{ back:"← 返回", step:"第 4 步 · 结算案件评估", title:"结算你的行政摘要",
       intro:"在下方安全支付固定费用。我们确认付款后即开始评估。",
       invName:"案件评估 — 行政摘要（Executive Summary）", invBy:"ETM-Tax Agent Office [ETM-TAO], Inc.",
       invFee:"专业费用", invVat:"增值税（12%）", invTotal:"应付总额",
@@ -363,6 +365,7 @@
   }
   function applyLang(lang){
     LANG=lang;
+    try{ localStorage.setItem("tl_lang", lang); }catch(e){}
     document.documentElement.lang = lang==="zh"?"zh-CN":(lang==="tl"?"tl":"en");
     document.querySelectorAll("[data-i]").forEach(el=>{ const k=el.getAttribute("data-i"); if(I18N[lang][k]!=null) el.innerHTML=I18N[lang][k]; });
     renderMethods();
@@ -407,7 +410,12 @@
     }
     sent.scrollIntoView({behavior:"smooth",block:"center"});
   });
-  applyLang("en");
+  (function initLang(){
+    var q=(new URLSearchParams(location.search)).get("lang");
+    var saved; try{ saved=localStorage.getItem("tl_lang"); }catch(e){}
+    var lang = [q,saved].find(function(l){ return l==="en"||l==="tl"||l==="zh"; }) || "en";
+    applyLang(lang);
+  })();
   // Manual reference-paste + screenshot form is only for MANUAL rails (GCash/bank). With a
   // gateway (PayMongo) the webhook auto-reconciles, so hide the manual block if no manual rail is active.
   (function(){
