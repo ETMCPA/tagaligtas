@@ -7,6 +7,8 @@
 BUILD_SPEC.md
 TRIAGE_SPEC.md
 UX_STATE_MAP.md
+STATUS_SPEC.md
+ORDER_FLOW_SPEC.md
 CLAUDE.md
 # never commit client documents or secrets into the deployable site
 *.pdf
