@@ -63,12 +63,12 @@
   .badge.accred{border-color:#cfe0c2;background:var(--green-soft);color:var(--green-ink)}
   .h-langs{font-size:12px;color:var(--muted);font-weight:600;margin-top:8px;letter-spacing:.02em}
   .practitioner{display:flex;gap:13px;align-items:stretch;margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff}
-  .pract-photo{flex:0 0 72px;width:72px;align-self:stretch;border-radius:14px;object-fit:cover;object-position:50% 12%;background:var(--green-soft);border:2px solid #cfe0c2}
-  .pract-name{font-size:16px;font-weight:800;color:var(--navy);line-height:1.2}
-  .pract-title{font-size:12.5px;font-weight:800;color:var(--green-strong);margin-top:1px;line-height:1.3}
-  .pract-cred{font-size:11.5px;color:var(--green-strong);font-weight:700;margin-top:2px;line-height:1.35}
-  .pract-org{font-size:10px;letter-spacing:-.01em;color:var(--green-strong);font-weight:700;margin-top:1px;line-height:1.35;white-space:nowrap}
-  .pract-line{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.4}
+  .pract-photo{flex:0 0 72px;width:72px;height:auto;align-self:stretch;border-radius:14px;object-fit:cover;object-position:50% 12%;background:var(--green-soft);border:2px solid #cfe0c2}
+  .pract-name{font-size:15px;font-weight:800;color:var(--navy);line-height:1.15}
+  .pract-title{font-size:11px;font-weight:800;color:var(--green-strong);margin-top:1px;line-height:1.25}
+  .pract-cred{font-size:11px;color:var(--green-strong);font-weight:700;margin-top:1px;line-height:1.3}
+  .pract-org{font-size:11px;letter-spacing:-.01em;color:var(--green-strong);font-weight:700;margin-top:1px;line-height:1.3;white-space:nowrap}
+  .pract-line{font-size:11.5px;color:var(--muted);margin-top:3px;line-height:1.35}
   .process{margin:16px 20px 0;display:flex;flex-direction:column;gap:9px}
   .pstep{display:flex;align-items:center;gap:11px;font-size:13px;color:var(--slate);font-weight:600}
   .pnum{flex:0 0 22px;width:22px;height:22px;border-radius:50%;background:var(--green-soft);color:var(--green-ink);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center}
@@ -137,7 +137,8 @@
   .result.out{background:var(--green-soft);border-color:#cfe0c2}
   .result.out .rlabel,.result.out .big{color:var(--green-ink)}
   .disclaimer{font-size:11.5px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px dashed var(--amber-line)}
-  .filenow{text-align:center;font-size:16px;font-weight:800;color:var(--amber);margin:14px 0 0}
+  .filenow{text-align:center;font-size:16px;font-weight:800;color:var(--amber);margin:14px 0 0;line-height:1.25}
+  .filenow-sub{display:block;font-size:13px;font-weight:700;line-height:1.3;margin-top:2px}
   .filenow.calm{color:var(--green-strong)}
 
   .privacy{font-size:11px;color:var(--muted);margin:16px 0 0;text-align:center}
@@ -419,7 +420,7 @@
   const RESULTS = {
     en:{
       rlabel:"Due Date",
-      fileNow:"Do not ignore this.<br>The clock is already running. Prepare your reply — now, not later.", fileNotice:"Submit the requested documents immediately.", fileUnsure:"Bring your documents in — let's confirm your exact date.", nodAction:"Attend the meeting, then file your reconsideration — don't miss either clock.",
+      fileNow:"Do not ignore this.<span class=\"filenow-sub\">The clock is already running.</span><span class=\"filenow-sub\">Prepare your reply — now, not later.</span>", fileNotice:"Submit the requested documents immediately.", fileUnsure:"Bring your documents in — let's confirm your exact date.", nodAction:"Attend the meeting, then file your reconsideration — don't miss either clock.",
       nodTitle:(a,b)=>`Meet the BIR by ${a}; file your Request for Reconsideration by ${b}.`,
       nodRule:"A Notice of Discrepancy (NOD) gives 5 days from receipt to meet the revenue officers, then 30 days from receipt to file a Request for Reconsideration.",
       dueTitle:d=>`Your deadline is ${d}.`,
@@ -453,7 +454,7 @@
     },
     tl:{
       rlabel:"Takdang Petsa",
-      fileNow:"Huwag itong balewalain.<br>Tumatakbo na ang orasan. Ihanda ang iyong sagot — ngayon, hindi mamaya.", fileNotice:"Isumite kaagad ang hinihinging mga dokumento.", fileUnsure:"Dalhin ang dokumento — kumpirmahin natin ang eksaktong petsa.", nodAction:"Dumalo sa pulong, tapos i-file ang reconsideration — huwag palampasin ang alinman.",
+      fileNow:"Huwag itong balewalain.<span class=\"filenow-sub\">Tumatakbo na ang orasan.</span><span class=\"filenow-sub\">Ihanda ang iyong sagot — ngayon, hindi mamaya.</span>", fileNotice:"Isumite kaagad ang hinihinging mga dokumento.", fileUnsure:"Dalhin ang dokumento — kumpirmahin natin ang eksaktong petsa.", nodAction:"Dumalo sa pulong, tapos i-file ang reconsideration — huwag palampasin ang alinman.",
       nodTitle:(a,b)=>`Makipagkita sa BIR bago ang ${a}; i-file ang Request for Reconsideration bago ang ${b}.`,
       nodRule:"Ang Notice of Discrepancy (NOD) ay nagbibigay ng 5 araw mula pagtanggap para makipagkita sa mga revenue officer, tapos 30 araw mula pagtanggap para mag-file ng Request for Reconsideration.",
       dueTitle:d=>`Ang iyong deadline ay ${d}.`,
@@ -487,7 +488,7 @@
     },
     zh:{
       rlabel:"截止日期",
-      fileNow:"切勿忽视。<br>时限已经在走。现在就准备你的答复 — 不要拖延。", fileNotice:"请立即提交所要求的文件。", fileUnsure:"带上你的文件 — 我们一起确认确切日期。", nodAction:"出席会面，并提交复议 — 两个期限都不能错过。",
+      fileNow:"切勿忽视。<span class=\"filenow-sub\">时限已经在走。</span><span class=\"filenow-sub\">现在就准备你的答复 — 不要拖延。</span>", fileNotice:"请立即提交所要求的文件。", fileUnsure:"带上你的文件 — 我们一起确认确切日期。", nodAction:"出席会面，并提交复议 — 两个期限都不能错过。",
       nodTitle:(a,b)=>`请在 ${a} 前与 BIR 会面；在 ${b} 前提交复议申请。`,
       nodRule:"差异通知书（NOD）自收到起给 5 天与税务官会面，再自收到起 30 天提交复议申请（Request for Reconsideration）。",
       dueTitle:d=>`你的截止日期是 ${d}。`,
